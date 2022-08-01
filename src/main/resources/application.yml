@@ -1,13 +1,13 @@
 server:
-  port: 9000
+  port: 8080
 
 spring:
   application:
-    name: demo
+    name: techl
 
   datasource:
     platform: mysql
-    url:  # 변경해주세요
+    url:
     username:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver # mysql 8버전

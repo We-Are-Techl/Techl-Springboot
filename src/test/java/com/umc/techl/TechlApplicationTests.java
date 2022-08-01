@@ -1,7 +1,7 @@
 package com.umc.techl;
 
 //@SpringBootTest
-//class DemoApplicationTests {
+//class TechlApplicationTests {
 //
 //    @Test
 //    void contextLoads() {

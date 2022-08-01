@@ -4,11 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class TechlApplication {
 
     public static void main(String[] args) {
 
-        SpringApplication.run(DemoApplication.class, args);
+        SpringApplication.run(TechlApplication.class, args);
 
         // 메모리 사용량 출력
         long heapSize = Runtime.getRuntime().totalMemory();
