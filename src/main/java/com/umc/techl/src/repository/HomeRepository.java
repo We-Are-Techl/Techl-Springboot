@@ -58,7 +58,7 @@ public class HomeRepository {
                 (rs,rowNum) -> new GetBookInfoRes(
                         rs.getString("cover"),
                         rs.getString("title"),
-                        getRecruitingPostRes = this.jdbcTemplate.query("select book.title as title, cover\n" +
+                        getRecruitingPostRes = this.jdbcTemplate.query("select book.title as title, coverImage\n" +
                                                                             "from post\n" +
                                                                             "\t\tleft join book as book on post.bookIdx = book.bookIdx\n" +
                                                                             "where post.bookIdx = ? and post.status = 'RECRUITING'\n" +
@@ -66,10 +66,10 @@ public class HomeRepository {
                                                                             "limit 3;",
                                 (ra, rownum) -> new GetRecruitingPostRes(
                                         ra.getString("title"),
-                                        ra.getString("cover")
+                                        ra.getString("coverImage")
                                 ),selectBookIdx
                         ),
-                        getOngingOrFinishedPostRes = this.jdbcTemplate.query("select book.title as title, cover\n" +
+                        getOngingOrFinishedPostRes = this.jdbcTemplate.query("select book.title as title, coverImage\n" +
                                                                                 "from post\n" +
                                                                                 "    left join book as book on post.bookIdx = book.bookIdx\n" +
                                                                                 "where post.bookIdx = ? and (post.status = 'ONGOING' or post.status = 'FINISHED')\n" +
@@ -77,7 +77,7 @@ public class HomeRepository {
                                                                                 "limit 3;",
                                 (rb, rownum) -> new GetOngingOrFinishedPostRes(
                                         rb.getString("title"),
-                                        rb.getString("cover")
+                                        rb.getString("coverImage")
                                 ),selectBookIdx
                         ),
                         getForumInfoRes = this.jdbcTemplate.query("select title, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +

@@ -9,5 +9,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class GetRecruitingPostRes {
     private String title;
-    private String cover;
+    private String coverImage;
 }
