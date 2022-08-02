@@ -1,6 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
+import com.umc.techl.src.model.GetBookInfoRes;
 import com.umc.techl.src.model.GetHomeInfoRes;
 import com.umc.techl.src.repository.HomeRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +27,20 @@ public class HomeService {
 
     }
 
+    public GetBookInfoRes getBookInfo(int bookIdx) throws BaseException {
+        try {
+            GetBookInfoRes getBookInfoRes = homeRepository.getBookInfo(bookIdx);
+            return getBookInfoRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+
+    }
+
 
 
 
 }
+
 
 

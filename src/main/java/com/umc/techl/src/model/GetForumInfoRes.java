@@ -7,10 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetHomeInfoRes {   // 홈 화면 정보
-    private String cover;
+public class GetForumInfoRes {
     private String title;
-    private String authors;
-    private int countPost;
-    private int countForum;
+    private String nickName;
+    private int countUpvote;
+    private int countComment;
+    private String createdDate;
 }
