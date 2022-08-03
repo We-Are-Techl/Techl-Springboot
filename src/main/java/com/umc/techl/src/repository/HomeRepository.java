@@ -22,28 +22,25 @@ public class HomeRepository {
     }
 
     public List<GetHomeInfoRes> getHomeInfo(){
-        String getHomeInfoQuery = "select cover, title, authors,\n" +
-                                "if(countPost is null, 0, countPost) as countPost,\n" +
-                                "if(countForum is null, 0, countForum) as countForum\n" +
-                                "from book as b\n" +
-                                "        left join (select bookIdx,count(*) as countPost\n" +
-                                "                    from post\n" +
-                                "                    where status = 'RECRUITING'\n" +
-                                "                    group by bookIdx) as p on b.bookIdx = p.bookIdx\n" +
-                                "        left join (select bookIdx,group_concat(author) as authors\n" +
-                                "                    from bookauthor\n" +
-                                "                    group by bookIdx) as ba on b.bookIdx = ba.bookIdx\n" +
-                                "        left join (select bookIdx,count(*) as countForum\n" +
-                                "                    from forum\n" +
-                                "                    group by bookIdx) as f on b.bookIdx = f.bookIdx\n" +
-                                "where b.status = 'ACTIVE'\n" +
-                                "order by b.createdAt desc";
+        String getHomeInfoQuery = "select cover, title, author,\n" +
+                                    "       if(countPost is null, 0, countPost) as countPost,\n" +
+                                    "       if(countForum is null, 0, countForum) as countForum\n" +
+                                    "from book as b\n" +
+                                    "         left join (select bookIdx,count(*) as countPost\n" +
+                                    "                    from post\n" +
+                                    "                    where status = 'RECRUITING'\n" +
+                                    "                    group by bookIdx) as p on b.bookIdx = p.bookIdx\n" +
+                                    "         left join (select bookIdx,count(*) as countForum\n" +
+                                    "                    from forum\n" +
+                                    "                    group by bookIdx) as f on b.bookIdx = f.bookIdx\n" +
+                                    "where b.status = 'ACTIVE'\n" +
+                                    "order by b.createdAt desc";
 
         return this.jdbcTemplate.query(getHomeInfoQuery,
                 (rs,rowNum) -> new GetHomeInfoRes(
                         rs.getString("cover"),
                         rs.getString("title"),
-                        rs.getString("authors"),
+                        rs.getString("author"),
                         rs.getInt("countPost"),
                         rs.getInt("countForum")
                 ));

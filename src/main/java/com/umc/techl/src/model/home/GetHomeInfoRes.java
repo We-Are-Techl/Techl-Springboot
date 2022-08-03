@@ -10,7 +10,7 @@ import lombok.Setter;
 public class GetHomeInfoRes {   // 홈 화면 정보
     private String cover;
     private String title;
-    private String authors;
+    private String author;
     private int countPost;
     private int countForum;
 }
