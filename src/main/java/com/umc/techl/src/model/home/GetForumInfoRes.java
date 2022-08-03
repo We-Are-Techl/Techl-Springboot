@@ -1,4 +1,4 @@
-package com.umc.techl.src.model;
+package com.umc.techl.src.model.home;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

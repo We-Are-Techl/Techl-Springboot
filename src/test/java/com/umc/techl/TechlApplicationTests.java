@@ -1,10 +1,9 @@
 package com.umc.techl;
 
-import com.umc.techl.src.model.GetForumInfoRes;
-import com.umc.techl.src.model.GetOngingOrFinishedPostRes;
-import com.umc.techl.src.model.GetRecruitingPostRes;
+import com.umc.techl.src.model.home.GetForumInfoRes;
+import com.umc.techl.src.model.home.GetOngingOrFinishedPostRes;
+import com.umc.techl.src.model.home.GetRecruitingPostRes;
 import com.umc.techl.src.repository.HomeRepository;
-import lombok.AllArgsConstructor;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

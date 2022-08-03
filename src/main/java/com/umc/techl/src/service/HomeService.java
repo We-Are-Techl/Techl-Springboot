@@ -1,8 +1,8 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.src.model.GetBookInfoRes;
-import com.umc.techl.src.model.GetHomeInfoRes;
+import com.umc.techl.src.model.home.GetBookInfoRes;
+import com.umc.techl.src.model.home.GetHomeInfoRes;
 import com.umc.techl.src.repository.HomeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

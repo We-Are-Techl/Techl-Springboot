@@ -1,6 +1,6 @@
 package com.umc.techl.src.repository;
 
-import com.umc.techl.src.model.*;
+import com.umc.techl.src.model.home.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
