@@ -71,5 +71,17 @@ class TechlApplicationTests {
         System.out.println("getForumInfoRes = " + getForumInfoRes);
     }
 
+    @Test
+    void testUserJoin() {
+        String createUserInterestQuery = "insert into InterestField (userIdx, interest) VALUES (?,?)";
+        Object[] createUserInterestParams = new Object[]{7, "java"};
+        this.jdbcTemplate.update(createUserInterestQuery, createUserInterestParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        Integer integer = this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(integer);
+    }
+
 
 }
