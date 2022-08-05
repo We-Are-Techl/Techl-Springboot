@@ -22,7 +22,7 @@ public class HomeRepository {
     }
 
     public List<GetHomeInfoRes> getHomeInfo(){
-        String getHomeInfoQuery = "select cover, title, author,\n" +
+        String getHomeInfoQuery = "select b.bookIdx, cover, title, author,\n" +
                                     "       if(countPost is null, 0, countPost) as countPost,\n" +
                                     "       if(countForum is null, 0, countForum) as countForum\n" +
                                     "from book as b\n" +
@@ -38,6 +38,7 @@ public class HomeRepository {
 
         return this.jdbcTemplate.query(getHomeInfoQuery,
                 (rs,rowNum) -> new GetHomeInfoRes(
+                        rs.getInt("bookIdx"),
                         rs.getString("cover"),
                         rs.getString("title"),
                         rs.getString("author"),

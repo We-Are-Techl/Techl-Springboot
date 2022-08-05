@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetHomeInfoRes {   // 홈 화면 정보
+    private int bookIdx;
     private String cover;
     private String title;
     private String author;
