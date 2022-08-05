@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GetBookInfoRes {   // 홈에서 책 클릭시 화면
+    private int bookIdx;
     private String cover;
     private String title;
     private List<GetRecruitingPostRes> getRecruitingPost;

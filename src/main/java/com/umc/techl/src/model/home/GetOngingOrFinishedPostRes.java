@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetOngingOrFinishedPostRes {
+    private int postIdx;
     private String title;
     private String coverImage;
 }
