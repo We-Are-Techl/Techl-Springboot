@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetForumListRes {
+    private int forumIdx;
     private String title;
     private String nickName;
     private int countUpvote;
