@@ -22,7 +22,7 @@ public class ForumService {
         try {
             GetBookTitleRes bookTitle = forumRepository.getBookTitle(bookIdx);
             List<GetForumListRes> forumListInfo = forumRepository.getForumListInfo(bookIdx);
-            GetForumInfoRes forumInfoRes = new GetForumInfoRes(bookTitle.getTitle(), forumListInfo);
+            GetForumInfoRes forumInfoRes = new GetForumInfoRes(bookTitle.getBookIdx(), bookTitle.getTitle(), forumListInfo);
             return forumInfoRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);

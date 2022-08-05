@@ -10,5 +10,6 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GetBookTitleRes {
+    private int bookIdx;
     private String title;
 }

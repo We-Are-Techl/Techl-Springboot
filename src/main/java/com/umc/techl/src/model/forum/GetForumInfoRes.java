@@ -10,6 +10,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 public class GetForumInfoRes {
+    private int bookIdx;
     private String title;
     private List<GetForumListRes> getForumListRes;
 }

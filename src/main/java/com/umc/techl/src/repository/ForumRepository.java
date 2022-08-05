@@ -58,10 +58,11 @@ public class ForumRepository {
     }
 
     public GetBookTitleRes getBookTitle(int bookIdx) {
-        String getBookTitleQuery = "select title from book where bookIdx = ?";
+        String getBookTitleQuery = "select bookIdx, title from book where bookIdx = ?";
 
         return this.jdbcTemplate.queryForObject(getBookTitleQuery,
                 (rs, rowNum) -> new GetBookTitleRes(
+                        rs.getInt("bookIdx"),
                         rs.getString("title")
                 ), bookIdx);
     }
