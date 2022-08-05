@@ -32,6 +32,9 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
     POST_USERS_EXISTS_PHONENUMBER(false,2018,"중복된 전화번호입니다."),
 
+    POST_USERS_EMPTY_PHONENUMBER(false, 2019, "전화번호를 입력해주세요."),
+    POST_USERS_EMPTY_PASSWORD(false, 2020, "비밀번호 입력해주세요."),
+
 
 
     /**

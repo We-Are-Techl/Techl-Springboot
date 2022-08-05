@@ -1,7 +1,9 @@
 package com.umc.techl.src.repository;
 
+import com.umc.techl.src.model.user.PostLoginReq;
 import com.umc.techl.src.model.user.PostUserInterestReq;
 import com.umc.techl.src.model.user.PostUserReq;
+import com.umc.techl.src.model.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -43,5 +45,21 @@ public class AuthRepository {
                 int.class,
                 checkPhoneNumberParams);
 
+    }
+
+    public User getPwd(String phoneNumber) {
+        String getPwdQuery = "select userIdx, userName, nickName, phoneNumber, password, profileImgUrl, userJob from User where phoneNumber = ?";
+
+        return this.jdbcTemplate.queryForObject(getPwdQuery,
+                (rs,rowNum) -> new User(
+                        rs.getInt("userIdx"),
+                        rs.getString("userName"),
+                        rs.getString("nickName"),
+                        rs.getString("phoneNumber"),
+                        rs.getString("password"),
+                        rs.getString("profileImgUrl"),
+                        rs.getString("userJob")
+                ), phoneNumber
+        );
     }
 }

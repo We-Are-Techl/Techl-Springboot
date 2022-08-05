@@ -1,8 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.src.model.user.PostUserReq;
-import com.umc.techl.src.model.user.PostUserRes;
+import com.umc.techl.src.model.user.*;
 import com.umc.techl.src.repository.AuthRepository;
 import com.umc.techl.utils.JwtService;
 import com.umc.techl.utils.SHA256;
@@ -44,6 +43,26 @@ public class AuthService {
             return new PostUserRes(jwt,userIdx);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
+
+        User user = authRepository.getPwd(postLoginReq.getPhoneNumber());
+        String encryptPwd;
+
+        try {
+            encryptPwd = new SHA256().encrypt(postLoginReq.getPassword());
+        } catch (Exception exception) {
+            throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
+        }
+
+        if (user.getPassword().equals(encryptPwd)) {
+            int userIdx = user.getUserIdx();
+            String jwt = jwtService.createJwt(userIdx);
+            return new PostLoginRes(userIdx, jwt);
+        } else {
+            throw new BaseException(FAILED_TO_LOGIN);
         }
     }
 }
