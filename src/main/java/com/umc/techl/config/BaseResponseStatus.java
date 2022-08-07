@@ -34,6 +34,8 @@ public enum BaseResponseStatus {
 
     POST_USERS_EMPTY_PHONENUMBER(false, 2019, "전화번호를 입력해주세요."),
     POST_USERS_EMPTY_PASSWORD(false, 2020, "비밀번호 입력해주세요."),
+    POST_EMPTY_TITLE(false, 2021, "글 제목을 입력해주세요."),
+    POST_EMPTY_CONTENTS(false, 2022, "글 내용을 입력해주세요."),
 
 
 

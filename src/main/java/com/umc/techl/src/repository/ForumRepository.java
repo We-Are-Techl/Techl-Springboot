@@ -1,8 +1,6 @@
 package com.umc.techl.src.repository;
 
-import com.umc.techl.src.model.forum.GetBookInfoRes;
-import com.umc.techl.src.model.forum.GetBookTitleRes;
-import com.umc.techl.src.model.forum.GetForumListRes;
+import com.umc.techl.src.model.forum.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -80,5 +78,14 @@ public class ForumRepository {
                         rs.getString("title"),
                         rs.getString("author")
                 ), bookIdx);
+    }
+
+    public int createForumContents(ForumContents forumContents) {
+        String createForumQuery = "insert into Forum (bookIdx, title, content, userIdx, contentsImage) VALUES (?,?,?,?,?)";
+        Object[] createForumParams = new Object[]{forumContents.getBookIdx(), forumContents.getTitle(), forumContents.getContent(), forumContents.getUserIdx(), forumContents.getContentsImage()};
+        this.jdbcTemplate.update(createForumQuery, createForumParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 }

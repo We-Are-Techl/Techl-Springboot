@@ -3,11 +3,15 @@ package com.umc.techl.src.controller;
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.src.model.forum.GetBookInfoRes;
+import com.umc.techl.src.model.forum.PostForumContentsRes;
 import com.umc.techl.src.model.forum.GetForumInfoRes;
+import com.umc.techl.src.model.forum.PostForumContentsReq;
 import com.umc.techl.src.service.ForumService;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import static com.umc.techl.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/forum")
@@ -33,10 +37,39 @@ public class ForumController {
     public BaseResponse<GetBookInfoRes> getBookInfo(@RequestParam int bookIdx) {
 
         try{
-            jwtService.getUserIdx();
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
 
             GetBookInfoRes bookInfo = forumService.getBookInfo(bookIdx);
             return new BaseResponse<>(bookInfo);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/new-forum/create")
+    public BaseResponse<PostForumContentsRes> createForumContents(@RequestParam int bookIdx,
+                                                                  @RequestBody PostForumContentsReq postForumContentsReq) {
+
+        try{
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            if (postForumContentsReq.getTitle() == null || postForumContentsReq.getTitle().length() == 0) {
+                throw new BaseException(POST_EMPTY_TITLE);
+            }
+
+            if (postForumContentsReq.getContent() == null || postForumContentsReq.getContent().length() == 0) {
+                throw new BaseException(POST_EMPTY_CONTENTS);
+            }
+
+            PostForumContentsRes postForumContentsRes = forumService.createForumContents(bookIdx, postForumContentsReq);
+            return new BaseResponse<>(postForumContentsRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

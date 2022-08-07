@@ -29,8 +29,8 @@ public class HomeController {
     }
 
     @ResponseBody
-    @GetMapping("/book")
-    public BaseResponse<GetBookInfoRes> getBookInfo(@RequestParam int bookIdx) {
+    @GetMapping("/book/{bookIdx}")
+    public BaseResponse<GetBookInfoRes> getBookInfo(@PathVariable("bookIdx")int bookIdx) {
         try{
             GetBookInfoRes bookInfo = homeService.getBookInfo(bookIdx);
             return new BaseResponse<>(bookInfo);
@@ -38,6 +38,4 @@ public class HomeController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
-
 }

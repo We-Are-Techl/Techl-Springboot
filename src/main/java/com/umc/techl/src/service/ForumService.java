@@ -1,22 +1,23 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.src.model.forum.GetBookInfoRes;
-import com.umc.techl.src.model.forum.GetBookTitleRes;
-import com.umc.techl.src.model.forum.GetForumInfoRes;
-import com.umc.techl.src.model.forum.GetForumListRes;
+import com.umc.techl.config.BaseResponse;
+import com.umc.techl.config.BaseResponseStatus;
+import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.repository.ForumRepository;
+import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.umc.techl.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.umc.techl.config.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
 public class ForumService {
 
+    private final JwtService jwtService;
     private final ForumRepository forumRepository;
 
     public GetForumInfoRes getForumInfo(int bookIdx) throws BaseException {
@@ -34,6 +35,25 @@ public class ForumService {
         try {
             GetBookInfoRes bookInfoRes = forumRepository.getBookInfoRes(bookIdx);
             return bookInfoRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostForumContentsRes createForumContents(int bookIdx, PostForumContentsReq contents) throws BaseException {
+
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            ForumContents forumContents = new ForumContents(bookIdx, userIdx, contents.getTitle(), contents.getContent(), contents.getContentsImage());
+            int forumIdx = forumRepository.createForumContents(forumContents);
+            PostForumContentsRes postForumContentsRes = new PostForumContentsRes(forumIdx);
+            return postForumContentsRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
