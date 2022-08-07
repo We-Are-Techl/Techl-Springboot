@@ -1,6 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
+import com.umc.techl.src.model.forum.GetBookInfoRes;
 import com.umc.techl.src.model.forum.GetBookTitleRes;
 import com.umc.techl.src.model.forum.GetForumInfoRes;
 import com.umc.techl.src.model.forum.GetForumListRes;
@@ -24,6 +25,15 @@ public class ForumService {
             List<GetForumListRes> forumListInfo = forumRepository.getForumListInfo(bookIdx);
             GetForumInfoRes forumInfoRes = new GetForumInfoRes(bookTitle.getBookIdx(), bookTitle.getTitle(), forumListInfo);
             return forumInfoRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetBookInfoRes getBookInfo(int bookIdx) throws BaseException {
+        try {
+            GetBookInfoRes bookInfoRes = forumRepository.getBookInfoRes(bookIdx);
+            return bookInfoRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
