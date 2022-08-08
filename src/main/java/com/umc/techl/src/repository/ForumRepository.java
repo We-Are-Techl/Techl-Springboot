@@ -129,8 +129,7 @@ public class ForumRepository {
                                                                         "         left join (select forumCommentIdx,count(*) as countUpvote\n" +
                                                                         "                    from forumcommentupvote\n" +
                                                                         "                    group by forumCommentIdx) as fcu on fc.forumCommentIdx = fcu.forumCommentIdx\n" +
-                                                                        "where forumIdx = ?\n" +
-                                                                        "order by createdAt desc",
+                                                                        "where forumIdx = ?\n",
                                 (ra, rownum) -> new GetForumCommentRes(
                                         ra.getString("nickName"),
                                         ra.getString("createdAt"),
@@ -139,5 +138,14 @@ public class ForumRepository {
                                 ),selectForumIdx
                         )
                 ), selectForumIdx);
+    }
+
+    public int createForumComment(ForumComment forumComment) {
+        String createForumQuery = "insert into forumcomment (forumIdx, userIdx, content) VALUES (?,?,?)";
+        Object[] createForumParams = new Object[]{forumComment.getForumIdx(), forumComment.getUserIdx(), forumComment.getContent()};
+        this.jdbcTemplate.update(createForumQuery, createForumParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 }

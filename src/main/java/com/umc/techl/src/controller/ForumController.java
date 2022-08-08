@@ -82,4 +82,26 @@ public class ForumController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    @ResponseBody
+    @PostMapping("/{forumIdx}/new-forum-comment")
+    public BaseResponse<PostNewCommentRes> getForumContentsInfo(@PathVariable("forumIdx")int forumIdx,
+                                                                @RequestBody PostNewCommentReq postNewCommentReq) {
+
+        try{
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            if (postNewCommentReq.getContent() == null || postNewCommentReq.getContent().length() == 0) {
+                throw new BaseException(POST_EMPTY_CONTENTS);
+            }
+
+            PostNewCommentRes postNewCommentRes = forumService.createNewForumComment(forumIdx, postNewCommentReq);
+            return new BaseResponse<>(postNewCommentRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

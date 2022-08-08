@@ -67,4 +67,22 @@ public class ForumService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public PostNewCommentRes createNewForumComment(int forumIdx_, PostNewCommentReq postNewCommentReq) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            ForumComment forumComment = new ForumComment(forumIdx_, userIdx, postNewCommentReq.getContent());
+            int forumIdx = forumRepository.createForumComment(forumComment);
+            PostNewCommentRes postNewCommentRes = new PostNewCommentRes(forumIdx);
+            return postNewCommentRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
