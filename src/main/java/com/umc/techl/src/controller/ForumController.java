@@ -2,10 +2,7 @@ package com.umc.techl.src.controller;
 
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
-import com.umc.techl.src.model.forum.GetBookInfoRes;
-import com.umc.techl.src.model.forum.PostForumContentsRes;
-import com.umc.techl.src.model.forum.GetForumInfoRes;
-import com.umc.techl.src.model.forum.PostForumContentsReq;
+import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.service.ForumService;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -70,6 +67,17 @@ public class ForumController {
 
             PostForumContentsRes postForumContentsRes = forumService.createForumContents(bookIdx, postForumContentsReq);
             return new BaseResponse<>(postForumContentsRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{forumIdx}")
+    public BaseResponse<GetForumContentsRes> getForumContentsInfo(@PathVariable("forumIdx")int forumIdx) {
+        try{
+            GetForumContentsRes getForumContentsInfo = forumService.getForumContentsInfo(forumIdx);
+            return new BaseResponse<>(getForumContentsInfo);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

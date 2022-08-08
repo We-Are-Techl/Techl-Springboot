@@ -58,4 +58,13 @@ public class ForumService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public GetForumContentsRes getForumContentsInfo(int forumIdx) throws BaseException {
+        try {
+            GetForumContentsRes getForumContents = forumRepository.getForumContentsInfo(forumIdx);
+            return getForumContents;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
