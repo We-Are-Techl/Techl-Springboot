@@ -119,5 +119,22 @@ public class HomeRepository {
                 ), selectBookIdx);
     }
 
+    public void bookmark(Bookmark book) {
+        String bookmarkQuery = "SELECT EXISTS(SELECT * from bookmark WHERE userIdx=? and contentIdx=? and type=?) as RESULT";
+        Object[] bookmarkParams = new Object[]{book.getUserIdx(), book.getBookIdx(), book.getType()};
+        String bookmarkStatusQuery = "select status from bookmark where userIdx=? and contentIdx=? and type=?";
 
+        if (this.jdbcTemplate.queryForObject(bookmarkQuery, bookmarkParams, Integer.class) == 0) {     //북마크가 안돼있을 때
+            String newBookmarkQuery = "insert into bookmark (userIdx, contentIdx, type) VALUES (?,?,?)";
+            this.jdbcTemplate.update(newBookmarkQuery, bookmarkParams);
+        } else {    //북마크가 돼있을 때
+            if (this.jdbcTemplate.queryForObject(bookmarkStatusQuery, bookmarkParams, String.class).equals("ACTIVE")) {
+                String bookmarkActiveUpdateQuery = "update bookmark set status='INACTIVE' where userIdx=? and contentIdx=? and type=?";
+                this.jdbcTemplate.update(bookmarkActiveUpdateQuery, bookmarkParams);
+            } else {
+                String bookmarkInactiveUpdateQuery = "update bookmark set status='ACTIVE' where userIdx=? and contentIdx=? and type=?";
+                this.jdbcTemplate.update(bookmarkInactiveUpdateQuery, bookmarkParams);
+            }
+        }
+    }
 }

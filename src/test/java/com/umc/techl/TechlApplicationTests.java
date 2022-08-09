@@ -44,5 +44,13 @@ class TechlApplicationTests {
         System.out.println(integer);
     }
 
+    @Test
+    void testQueryResult() {
+        String lastInserIdQuery = "SELECT EXISTS(SELECT * from bookmark WHERE userIdx=1 and contentIdx=1 and type='BOOK') as RESULT;";
+        Integer integer = this.jdbcTemplate.queryForObject(lastInserIdQuery, int.class);
+        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        System.out.println(integer);
+    }
+
 
 }
