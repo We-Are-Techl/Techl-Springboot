@@ -4,6 +4,7 @@ import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.config.BaseResponseStatus;
 import com.umc.techl.src.model.forum.*;
+import com.umc.techl.src.model.home.BookBookmark;
 import com.umc.techl.src.repository.ForumRepository;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -81,6 +82,22 @@ public class ForumService {
             int forumIdx = forumRepository.createForumComment(forumComment);
             PostNewCommentRes postNewCommentRes = new PostNewCommentRes(forumIdx);
             return postNewCommentRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void bookmark(int forumIdx) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            ForumBookmark forum = new ForumBookmark(userIdx, forumIdx, "FORUM");
+            forumRepository.bookmark(forum);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

@@ -1,6 +1,7 @@
 package com.umc.techl.src.repository;
 
 import com.umc.techl.src.model.forum.*;
+import com.umc.techl.src.model.home.BookBookmark;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -147,5 +148,25 @@ public class ForumRepository {
 
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public void bookmark(ForumBookmark forum) {
+        String bookmarkQuery = "SELECT EXISTS(SELECT * from bookmark WHERE userIdx=? and contentIdx=? and type=?) as RESULT";
+        Object[] bookmarkParams = new Object[]{forum.getUserIdx(), forum.getForumIdx(), forum.getType()};
+
+        String bookmarkStatusQuery = "select status from bookmark where userIdx=? and contentIdx=? and type=?";
+
+        if (this.jdbcTemplate.queryForObject(bookmarkQuery, bookmarkParams, Integer.class) == 0) {     //북마크가 안돼있을 때
+            String newBookmarkQuery = "insert into bookmark (userIdx, contentIdx, type) VALUES (?,?,?)";
+            this.jdbcTemplate.update(newBookmarkQuery, bookmarkParams);
+        } else {    //북마크가 돼있을 때
+            if (this.jdbcTemplate.queryForObject(bookmarkStatusQuery, bookmarkParams, String.class).equals("ACTIVE")) {
+                String bookmarkActiveUpdateQuery = "update bookmark set status='INACTIVE' where userIdx=? and contentIdx=? and type=?";
+                this.jdbcTemplate.update(bookmarkActiveUpdateQuery, bookmarkParams);
+            } else {
+                String bookmarkInactiveUpdateQuery = "update bookmark set status='ACTIVE' where userIdx=? and contentIdx=? and type=?";
+                this.jdbcTemplate.update(bookmarkInactiveUpdateQuery, bookmarkParams);
+            }
+        }
     }
 }

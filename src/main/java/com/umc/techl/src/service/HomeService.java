@@ -1,7 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.src.model.home.Bookmark;
+import com.umc.techl.src.model.home.BookBookmark;
 import com.umc.techl.src.model.home.GetBookInfoRes;
 import com.umc.techl.src.model.home.GetHomeInfoRes;
 import com.umc.techl.src.repository.HomeRepository;
@@ -46,16 +46,13 @@ public class HomeService {
             throw new BaseException(INVALID_JWT);
         }
 
-        int userIdx = jwtService.getUserIdx();
-        Bookmark book = new Bookmark(userIdx, bookIdx, "BOOK");
-        homeRepository.bookmark(book);
-        /*try {
+        try {
             int userIdx = jwtService.getUserIdx();
-            Bookmark book = new Bookmark(userIdx, bookIdx, "BOOK");
+            BookBookmark book = new BookBookmark(userIdx, bookIdx, "BOOK");
             homeRepository.bookmark(book);
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
-        }*/
+        }
     }
 }
 

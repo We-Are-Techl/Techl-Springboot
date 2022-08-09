@@ -119,9 +119,10 @@ public class HomeRepository {
                 ), selectBookIdx);
     }
 
-    public void bookmark(Bookmark book) {
+    public void bookmark(BookBookmark book) {
         String bookmarkQuery = "SELECT EXISTS(SELECT * from bookmark WHERE userIdx=? and contentIdx=? and type=?) as RESULT";
         Object[] bookmarkParams = new Object[]{book.getUserIdx(), book.getBookIdx(), book.getType()};
+
         String bookmarkStatusQuery = "select status from bookmark where userIdx=? and contentIdx=? and type=?";
 
         if (this.jdbcTemplate.queryForObject(bookmarkQuery, bookmarkParams, Integer.class) == 0) {     //북마크가 안돼있을 때

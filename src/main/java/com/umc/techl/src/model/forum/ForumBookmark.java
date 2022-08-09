@@ -1,4 +1,4 @@
-package com.umc.techl.src.model.home;
+package com.umc.techl.src.model.forum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Bookmark {
+public class ForumBookmark {
     private int userIdx;
-    private int bookIdx;
+    private int forumIdx;
     private String type;
 }

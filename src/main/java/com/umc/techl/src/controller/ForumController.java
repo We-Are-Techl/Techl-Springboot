@@ -2,6 +2,7 @@ package com.umc.techl.src.controller;
 
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
+import com.umc.techl.config.BaseResponseStatus;
 import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.service.ForumService;
 import com.umc.techl.utils.JwtService;
@@ -101,6 +102,21 @@ public class ForumController {
             PostNewCommentRes postNewCommentRes = forumService.createNewForumComment(forumIdx, postNewCommentReq);
             return new BaseResponse<>(postNewCommentRes);
         } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping("/{forumIdx}/bookmark")
+    public BaseResponse bookmark(@PathVariable("forumIdx") int forumIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            forumService.bookmark(forumIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
