@@ -10,6 +10,7 @@ import lombok.Setter;
 public class GetForumInfoRes {
     private int forumIdx;
     private String title;
+    private String contentsImage;
     private String nickName;
     private int countUpvote;
     private int countComment;

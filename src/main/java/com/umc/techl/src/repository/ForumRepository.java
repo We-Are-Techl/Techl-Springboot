@@ -21,7 +21,7 @@ public class ForumRepository {
     }
 
     public List<GetForumListRes> getForumListInfo(int bookIdx) {
-        String getForumInfoQuery = "select f.forumidx as forumIdx, title, nickName, if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
+        String getForumInfoQuery = "select f.forumidx as forumIdx, title, contentsImage, nickName, if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
                 "       if(countComment is null, 0, countComment) as countComment,\n" +
                 "       case\n" +
                 "           when timestampdiff(second, createdAt, current_timestamp) < 60 then concat(timestampdiff(second, createdAt, current_timestamp), '초 전')\n" +
@@ -51,6 +51,7 @@ public class ForumRepository {
                 (rs, rowNum) -> new GetForumListRes(
                         rs.getInt("forumIdx"),
                         rs.getString("title"),
+                        rs.getString("contentsImage"),
                         rs.getString("nickName"),
                         rs.getInt("countUpvote"),
                         rs.getInt("countComment"),

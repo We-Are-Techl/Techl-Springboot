@@ -81,7 +81,7 @@ public class HomeRepository {
                                         rb.getString("coverImage")
                                 ),selectBookIdx
                         ),
-                        getForumInfoRes = this.jdbcTemplate.query("select f.forumIdx as forumIdx, title, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
+                        getForumInfoRes = this.jdbcTemplate.query("select f.forumIdx as forumIdx, title, contentsImage, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
                                                                         "       if(countComment is null, 0, countComment) as countComment,\n" +
                                                                         "       case\n" +
                                                                         "            when timestampdiff(second, createdAt,current_timestamp) < 60 then concat(timestampdiff(second, createdAt,current_timestamp), '초 전')\n" +
@@ -110,6 +110,7 @@ public class HomeRepository {
                                 (rc, rownum) -> new GetForumInfoRes(
                                         rc.getInt("forumIdx"),
                                         rc.getString("title"),
+                                        rc.getString("contentsImage"),
                                         rc.getString("nickName"),
                                         rc.getInt("countUpvote"),
                                         rc.getInt("countComment"),
