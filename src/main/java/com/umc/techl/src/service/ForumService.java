@@ -102,4 +102,20 @@ public class ForumService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void forumUpvote(int forumIdx) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            ForumUpvote forumUpvote = new ForumUpvote(forumIdx, userIdx);
+            forumRepository.forumUpvote(forumUpvote);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

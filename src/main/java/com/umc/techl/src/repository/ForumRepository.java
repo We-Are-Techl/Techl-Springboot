@@ -169,4 +169,24 @@ public class ForumRepository {
             }
         }
     }
+
+    public void forumUpvote(ForumUpvote forumUpvote) {
+        String forumUpvoteQuery = "SELECT EXISTS(SELECT * from forumupvote WHERE forumIdx=? and userIdx=?) as RESULT";
+        Object[] forumUpvoteParams = new Object[]{forumUpvote.getForumIdx(), forumUpvote.getUserIdx()};
+
+        String forumUpvoteStatusQuery = "select status from forumupvote where forumIdx=? and userIdx=?";
+
+        if (this.jdbcTemplate.queryForObject(forumUpvoteQuery, forumUpvoteParams, Integer.class) == 0) {     //좋아요가 안돼있을 때
+            String newForumUpvoteQuery = "insert into forumupvote (forumIdx, userIdx) VALUES (?,?)";
+            this.jdbcTemplate.update(newForumUpvoteQuery, forumUpvoteParams);
+        } else {    //좋아요가 돼있을 때
+            if (this.jdbcTemplate.queryForObject(forumUpvoteStatusQuery, forumUpvoteParams, String.class).equals("ACTIVE")) {
+                String forumUpvoteActiveUpdateQuery = "update forumupvote set status='INACTIVE' where forumIdx=? and userIdx=?";
+                this.jdbcTemplate.update(forumUpvoteActiveUpdateQuery, forumUpvoteParams);
+            } else {
+                String forumUpvoteInactiveUpdateQuery = "update forumupvote set status='ACTIVE' where forumIdx=? and userIdx=?";
+                this.jdbcTemplate.update(forumUpvoteInactiveUpdateQuery, forumUpvoteParams);
+            }
+        }
+    }
 }
