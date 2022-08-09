@@ -189,4 +189,24 @@ public class ForumRepository {
             }
         }
     }
+
+    public void forumCommentUpvote(ForumCommentUpvote forumCommentUpvote) {
+        String forumCommentUpvoteQuery = "SELECT EXISTS(SELECT * from forumcommentupvote WHERE forumCommentIdx=? and userIdx=?) as RESULT";
+        Object[] forumCommentUpvoteParams = new Object[]{forumCommentUpvote.getForumCommentIdx(), forumCommentUpvote.getUserIdx()};
+
+        String forumCommentUpvoteStatusQuery = "select status from forumcommentupvote where forumCommentIdx=? and userIdx=?";
+
+        if (this.jdbcTemplate.queryForObject(forumCommentUpvoteQuery, forumCommentUpvoteParams, Integer.class) == 0) {     //좋아요가 안돼있을 때
+            String newForumCommentUpvoteQuery = "insert into forumcommentupvote (forumCommentIdx, userIdx) VALUES (?,?)";
+            this.jdbcTemplate.update(newForumCommentUpvoteQuery, forumCommentUpvoteParams);
+        } else {    //좋아요가 돼있을 때
+            if (this.jdbcTemplate.queryForObject(forumCommentUpvoteStatusQuery, forumCommentUpvoteParams, String.class).equals("ACTIVE")) {
+                String forumCommentUpvoteActiveUpdateQuery = "update forumcommentupvote set status='INACTIVE' where forumCommentIdx=? and userIdx=?";
+                this.jdbcTemplate.update(forumCommentUpvoteActiveUpdateQuery, forumCommentUpvoteParams);
+            } else {
+                String forumCommentUpvoteInactiveUpdateQuery = "update forumcommentupvote set status='ACTIVE' where forumCommentIdx=? and userIdx=?";
+                this.jdbcTemplate.update(forumCommentUpvoteInactiveUpdateQuery, forumCommentUpvoteParams);
+            }
+        }
+    }
 }

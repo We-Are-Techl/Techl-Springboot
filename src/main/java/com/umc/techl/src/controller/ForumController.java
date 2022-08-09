@@ -121,7 +121,7 @@ public class ForumController {
         }
     }
 
-    @PostMapping("/{forumIdx}/upvote")
+    @PostMapping("/{forumIdx}/forum-upvote")
     public BaseResponse forumUpvote(@PathVariable("forumIdx") int forumIdx) {
         try {
             String accessToken = jwtService.getJwt();
@@ -130,6 +130,21 @@ public class ForumController {
             }
 
             forumService.forumUpvote(forumIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping("/{forumCommentIdx}/forum-comment-upvote")
+    public BaseResponse forumCommentUpvote(@PathVariable("forumCommentIdx") int forumCommentIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            forumService.forumCommentUpvote(forumCommentIdx);
             return new BaseResponse<>(BaseResponseStatus.SUCCESS);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
