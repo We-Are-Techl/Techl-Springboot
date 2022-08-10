@@ -25,52 +25,24 @@ public class ForumActivityRepository {
 
 
     public GetForumActivityRes getForumInfo(int userIdx) {
-        String getUsersQuery = "select countForum+countPost as countForum,\n" +
-                "       countForumComment+countPostComment+countForumReplyOfComment+countPostReplyOfComment as countForumComment\n" +
-                "from user as u\n" +
-                "        left join (select u_.userIdx, if(countForum is null, 0, countForum) as countForum\n" +
-                "                    from user as u_\n" +
-                "                            left join(select userIdx, count(*) as countForum\n" +
-                "                                        from forum as f\n" +
-                "                                        where f.status = 'ACTIVE'\n" +
-                "                                        group by f.userIdx) as cf on u_.userIdx = cf.userIdx)\n" +
-                "                    as cf_ on u.userIdx = cf_.userIdx\n" +
-                "        left join (select u_.userIdx, if(countPost is null, 0, countPost) as countPost\n" +
-                "                    from user as u_\n" +
-                "                            left join(select userIdx, count(*) as countPost\n" +
-                "                                        from post as p\n" +
-                "                                        where status = 'RECRUITING' or status = 'ONGOING' or status = 'FINISHED'\n" +
-                "                                        group by p.userIdx) as cp on u_.userIdx = cp.userIdx)\n" +
-                "                    as cp_ on u.userIdx = cp_.userIdx\n" +
-                "        left join (select u_.userIdx, if(countForumComment is null, 0, countForumComment) as countForumComment\n" +
-                "                    from user as u_\n" +
-                "                            left join (select userIdx, count(*) as countForumComment\n" +
-                "                                        from ForumComment as fc\n" +
-                "                                        where fc.status = 'ACTIVE'\n" +
-                "                                        group by fc.userIdx) as cfc on u_.userIdx = cfc.userIdx)\n" +
-                "                    as cfc_ on u.userIdx = cfc_.userIdx\n" +
-                "        left join (select u_.userIdx, if(countPostComment is null, 0, countPostComment) as countPostComment\n" +
-                "                    from user as u_\n" +
-                "                            left join (select userIdx, count(*) as countPostComment\n" +
-                "                                        from postcomment as pc\n" +
-                "                                        where pc.status = 'ACTIVE'\n" +
-                "                                        group by pc.userIdx) as cpc on u_.userIdx = cpc.userIdx)\n" +
-                "                    as cpc_ on u.userIdx = cpc_.userIdx\n" +
-                "        left join (select u_.userIdx, if(countForumReplyOfComment is null, 0, countForumReplyOfComment) as countForumReplyOfComment\n" +
-                "                    from user as u_\n" +
-                "                            left join (select userIdx, count(*) as countForumReplyOfComment\n" +
-                "                                        from forumreplyofcomment as froc\n" +
-                "                                        where froc.status = 'ACTIVE'\n" +
-                "                                        group by froc.userIdx) as cfroc on u_.userIdx = cfroc.userIdx)\n" +
-                "                    as cfroc_ on u.userIdx = cfroc_.userIdx\n" +
-                "        left join (select u_.userIdx, if(countPostReplyOfComment is null, 0, countPostReplyOfComment) as countPostReplyOfComment\n" +
-                "                    from user as u_\n" +
-                "                            left join (select userIdx, count(*) as countPostReplyOfComment\n" +
-                "                                        from postreplyofcomment as proc\n" +
-                "                                        where proc.status = 'ACTIVE'\n" +
-                "                                        group by proc.userIdx) as cproc on u_.userIdx = cproc.userIdx)\n" +
-                "                    as cproc_ on u.userIdx = cproc_.userIdx\n" +
-                "where u.userIdx = ?";
+        String getUsersQuery = "select countForum, countForumComment\n" +
+                                "from user as u\n" +
+                                "        left join (select u_.userIdx, if(countForum is null, 0, countForum) as countForum\n" +
+                                "                    from user as u_\n" +
+                                "                            left join(select userIdx, count(*) as countForum\n" +
+                                "                                        from forum as f\n" +
+                                "                                        where f.status = 'ACTIVE'\n" +
+                                "                                        group by f.userIdx) as cf on u_.userIdx = cf.userIdx)\n" +
+                                "                    as cf_ on u.userIdx = cf_.userIdx\n" +
+                                "\n" +
+                                "        left join (select u_.userIdx, if(countForumComment is null, 0, countForumComment) as countForumComment\n" +
+                                "                    from user as u_\n" +
+                                "                            left join (select userIdx, count(*) as countForumComment\n" +
+                                "                                        from ForumComment as fc\n" +
+                                "                                        where fc.status = 'ACTIVE'\n" +
+                                "                                        group by fc.userIdx) as cfc on u_.userIdx = cfc.userIdx)\n" +
+                                "                    as cfc_ on u.userIdx = cfc_.userIdx\n" +
+                                "where u.userIdx = ?;";
 
         return this.jdbcTemplate.queryForObject(getUsersQuery,
                 (rs,rowNum) -> new GetForumActivityRes(

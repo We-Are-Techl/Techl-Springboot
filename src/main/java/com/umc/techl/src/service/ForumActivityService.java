@@ -25,6 +25,5 @@ public class ForumActivityService {
         }
 //        GetForumActivityRes getForumActivityRes = forumActivityRepository.getForumInfo(userIdx);
 //        return getForumActivityRes;
-
     }
 }
