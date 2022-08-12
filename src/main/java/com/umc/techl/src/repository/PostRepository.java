@@ -1,5 +1,6 @@
 package com.umc.techl.src.repository;
 
+import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.post.GetOngoingOrFinishedListRes;
 import com.umc.techl.src.model.post.GetPostListRes;
 import com.umc.techl.src.model.post.GetRecruitingPostListRes;
@@ -59,6 +60,20 @@ public class PostRepository {
                                         rb.getString("recruiting")
                                 ), bookIdx
                         )
+                ), bookIdx);
+    }
+
+    public GetBookInfoRes getBookInfoRes(int bookIdx) {
+        String getBookInfoQuery = "select bookIdx, cover, title, author\n" +
+                "from Book\n" +
+                "where status = 'ACTIVE' and bookIdx = ?";
+
+        return this.jdbcTemplate.queryForObject(getBookInfoQuery,
+                (rs, rowNum) -> new GetBookInfoRes(
+                        rs.getInt("bookIdx"),
+                        rs.getString("cover"),
+                        rs.getString("title"),
+                        rs.getString("author")
                 ), bookIdx);
     }
 }

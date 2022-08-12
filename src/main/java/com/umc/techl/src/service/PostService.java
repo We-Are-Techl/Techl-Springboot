@@ -1,6 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
+import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.forum.GetBookTitleRes;
 import com.umc.techl.src.model.forum.GetForumInfoRes;
 import com.umc.techl.src.model.forum.GetForumListRes;
@@ -26,6 +27,15 @@ public class PostService {
         try {
             GetPostListRes getPostListRes = postRepository.getPostListInfo(bookIdx);
             return getPostListRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetBookInfoRes getBookInfo(int bookIdx) throws BaseException {
+        try {
+            GetBookInfoRes bookInfoRes = postRepository.getBookInfoRes(bookIdx);
+            return bookInfoRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

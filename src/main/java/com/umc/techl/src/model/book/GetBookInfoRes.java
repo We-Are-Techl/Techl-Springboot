@@ -1,4 +1,4 @@
-package com.umc.techl.src.model.forum;
+package com.umc.techl.src.model.book;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

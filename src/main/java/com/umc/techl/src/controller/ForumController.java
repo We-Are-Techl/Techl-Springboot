@@ -3,6 +3,7 @@ package com.umc.techl.src.controller;
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.config.BaseResponseStatus;
+import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.service.ForumService;
 import com.umc.techl.utils.JwtService;

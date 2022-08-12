@@ -1,10 +1,8 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.config.BaseResponse;
-import com.umc.techl.config.BaseResponseStatus;
+import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.forum.*;
-import com.umc.techl.src.model.home.BookBookmark;
 import com.umc.techl.src.repository.ForumRepository;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;

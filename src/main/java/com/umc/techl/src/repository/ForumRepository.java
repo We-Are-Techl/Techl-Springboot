@@ -1,7 +1,7 @@
 package com.umc.techl.src.repository;
 
+import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.forum.*;
-import com.umc.techl.src.model.home.BookBookmark;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
