@@ -1,6 +1,7 @@
 package com.umc.techl.src.repository;
 
 import com.umc.techl.src.model.book.GetBookInfoRes;
+import com.umc.techl.src.model.book.GetBookTitleRes;
 import com.umc.techl.src.model.forum.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

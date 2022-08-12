@@ -2,14 +2,14 @@ package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
 import com.umc.techl.src.model.book.GetBookInfoRes;
-import com.umc.techl.src.model.post.GetPostListRes;
-import com.umc.techl.src.model.post.PostContents;
-import com.umc.techl.src.model.post.PostNewPostReq;
-import com.umc.techl.src.model.post.PostNewPostRes;
+import com.umc.techl.src.model.book.GetBookTitleRes;
+import com.umc.techl.src.model.post.*;
 import com.umc.techl.src.repository.PostRepository;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static com.umc.techl.config.BaseResponseStatus.DATABASE_ERROR;
 import static com.umc.techl.config.BaseResponseStatus.INVALID_JWT;
@@ -23,8 +23,11 @@ public class PostService {
 
     public GetPostListRes getPostListInfo(int bookIdx) throws BaseException {
         try {
-            GetPostListRes getPostListRes = postRepository.getPostListInfo(bookIdx);
-            return getPostListRes;
+            GetBookTitleRes bookTitle = postRepository.getBookTitle(bookIdx);
+            List<GetRecruitingPostListRes> getRecruitingPostListRes = postRepository.getRecruitingPostListInfo(bookIdx);
+            List<GetOngoingOrFinishedListRes> getOngoingOrFinishedListRes = postRepository.getOngoingOrFinishedListInfo(bookIdx);
+            GetPostListRes postInfoRes = new GetPostListRes(bookTitle.getBookIdx(), bookTitle.getTitle(), getRecruitingPostListRes, getOngoingOrFinishedListRes);
+            return postInfoRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }

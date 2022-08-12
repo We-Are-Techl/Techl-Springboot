@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetOngoingOrFinishedListRes {
+    private int postIdx;
     private String title;
     private String type;
     private String period;
