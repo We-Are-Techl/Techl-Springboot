@@ -4,6 +4,7 @@ import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.post.GetOngoingOrFinishedListRes;
 import com.umc.techl.src.model.post.GetPostListRes;
 import com.umc.techl.src.model.post.GetRecruitingPostListRes;
+import com.umc.techl.src.model.post.PostContents;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -75,5 +76,15 @@ public class PostRepository {
                         rs.getString("title"),
                         rs.getString("author")
                 ), bookIdx);
+    }
+
+    public int createPostContents(PostContents postContents) {
+        String createPostQuery = "insert into Post (bookIdx, userIdx, type, title, content, contentsImage, coverImage, confirmMethod, startDate, endDate) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        Object[] createPostParams = new Object[]{postContents.getBookIdx(), postContents.getUserIdx(), postContents.getType(), postContents.getTitle(), postContents.getContent(),
+                                                    postContents.getContentsImage(), postContents.getCoverImage(), postContents.getConfirmMethod(), postContents.getStartDate(), postContents.getEndDate()};
+        this.jdbcTemplate.update(createPostQuery, createPostParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
 }
