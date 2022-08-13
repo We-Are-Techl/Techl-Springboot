@@ -2,9 +2,7 @@ package com.umc.techl.src.repository;
 
 import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.book.GetBookTitleRes;
-import com.umc.techl.src.model.post.GetOngoingOrFinishedListRes;
-import com.umc.techl.src.model.post.GetRecruitingPostListRes;
-import com.umc.techl.src.model.post.PostContents;
+import com.umc.techl.src.model.post.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -94,13 +92,82 @@ public class PostRepository {
                 ), bookIdx);
     }
 
-    public int createPostContents(PostContents postContents) {
+    public int createPostContents(PostContentsForm postContentsForm) {
         String createPostQuery = "insert into Post (bookIdx, userIdx, type, title, content, contentsImage, coverImage, confirmMethod, startDate, endDate) VALUES (?,?,?,?,?,?,?,?,?,?)";
-        Object[] createPostParams = new Object[]{postContents.getBookIdx(), postContents.getUserIdx(), postContents.getType(), postContents.getTitle(), postContents.getContent(),
-                                                    postContents.getContentsImage(), postContents.getCoverImage(), postContents.getConfirmMethod(), postContents.getStartDate(), postContents.getEndDate()};
+        Object[] createPostParams = new Object[]{postContentsForm.getBookIdx(), postContentsForm.getUserIdx(), postContentsForm.getType(), postContentsForm.getTitle(), postContentsForm.getContent(),
+                                                    postContentsForm.getContentsImage(), postContentsForm.getCoverImage(), postContentsForm.getConfirmMethod(), postContentsForm.getStartDate(), postContentsForm.getEndDate()};
         this.jdbcTemplate.update(createPostQuery, createPostParams);
 
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
+
+    public int checkJoinedMember(int postIdx, int userIdx) {
+        String checkJoinedMemberQuery = "select exists(select joinContentsIdx from joincontents where postIdx = ? and userIdx = ?)";
+        Object[] checkJoinedMemberParams = new Object[]{postIdx, userIdx};
+        return this.jdbcTemplate.queryForObject(checkJoinedMemberQuery,
+                int.class,
+                checkJoinedMemberParams
+        );
+    }
+
+    public PostContentsInfo getPostContentsInfo(int postIdx) {
+        String postContentsInfoQuery = "select postIdx, p.bookIdx, nickName, title, concat(startDate,' ~ ',endDate) as period,\n" +
+                                        "       case\n" +
+                                        "           when status = 'RECRUITING' then '모집중'\n" +
+                                        "           when status = 'ONGOING' then '진행중'\n" +
+                                        "           when status = 'FINISHED' then '완료'\n" +
+                                        "           end as status,\n" +
+                                        "       B.cover as bookCover, content, contentsImage, confirmMethod\n" +
+                                        "from Post as p\n" +
+                                        "         left join(select cover, bookIdx from Book) as B on p.bookIdx = B.bookIdx\n" +
+                                        "         left join (select userIdx, nickName from User where User.status = 'ACTIVE') as  U on p.userIdx = U.userIdx\n" +
+                                        "where p.postIdx = ?";
+
+        return this.jdbcTemplate.queryForObject(postContentsInfoQuery,
+                (rs, rowNum) -> new PostContentsInfo(
+                        rs.getInt("postIdx"),
+                        rs.getInt("bookIdx"),
+                        rs.getString("nickName"),
+                        rs.getString("title"),
+                        rs.getString("period"),
+                        rs.getString("status"),
+                        rs.getString("bookCover"),
+                        rs.getString("content"),
+                        rs.getString("contentsImage"),
+                        rs.getString("confirmMethod")
+                ), postIdx);
+    }
+
+    public List<GetPostCommentRes> getPostCommentInfo(int postIdx) {
+        String postCommentInfoQuery = "select nickName, createdAt, content, countUpvote\n" +
+                                        "from postcomment as pc\n" +
+                                        "        left join (select useridx, nickName\n" +
+                                        "                    from user) as u on pc.userIdx = u.userIdx\n" +
+                                        "        left join (select postCommentIdx, count(*) as countUpvote\n" +
+                                        "                    from postcommentupvote\n" +
+                                        "                    where status = 'ACTIVE'\n" +
+                                        "                    group by postCommentUpvoteIdx) as pcu on pc.postCommentIdx = pcu.postCommentIdx\n" +
+                                        "where postIdx = ?";
+
+        return this.jdbcTemplate.query(postCommentInfoQuery,
+                (rs, rowNum) -> new GetPostCommentRes(
+                        rs.getString("nickName"),
+                        rs.getString("createdAt"),
+                        rs.getString("content"),
+                        rs.getInt("countUpvote")
+                ), postIdx);
+    }
+
+    public int getCountPostComment(int postIdx) {
+        String countPostCommentQuery = "select if(count(*) is null, 0, count(*)) as countPostComment\n" +
+                                        "from postcomment\n" +
+                                        "where postIdx = ?\n" +
+                                        "group by postIdx";
+
+        return this.jdbcTemplate.queryForObject(countPostCommentQuery,
+                int.class,
+                postIdx
+        );
     }
 }

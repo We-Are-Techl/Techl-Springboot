@@ -1,6 +1,5 @@
 package com.umc.techl.src.model.post;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class PostContents {
+public class PostContentsForm {
     private int bookIdx;
     private int userIdx;
     private String type;

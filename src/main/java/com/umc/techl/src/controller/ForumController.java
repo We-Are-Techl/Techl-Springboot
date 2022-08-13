@@ -87,7 +87,7 @@ public class ForumController {
 
     @ResponseBody
     @PostMapping("/{forumIdx}/new-forum-comment")
-    public BaseResponse<PostNewCommentRes> getForumContentsInfo(@PathVariable("forumIdx")int forumIdx,
+    public BaseResponse<PostNewCommentRes> createNewForumComment(@PathVariable("forumIdx")int forumIdx,
                                                                 @RequestBody PostNewCommentReq postNewCommentReq) {
 
         try{

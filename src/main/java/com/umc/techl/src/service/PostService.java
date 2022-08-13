@@ -11,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.umc.techl.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.umc.techl.config.BaseResponseStatus.INVALID_JWT;
+import static com.umc.techl.config.BaseResponseStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -51,13 +50,61 @@ public class PostService {
 
         try {
             int userIdx = jwtService.getUserIdx();
-            PostContents postContents = new PostContents(bookIdx, userIdx, contents.getType(), contents.getTitle(), contents.getContent(),
+            PostContentsForm postContentsForm = new PostContentsForm(bookIdx, userIdx, contents.getType(), contents.getTitle(), contents.getContent(),
                     contents.getContentsImage(), contents.getCoverImage(), contents.getConfirmMethod(), contents.getStartDate(), contents.getEndDate());
-            int postIdx = postRepository.createPostContents(postContents);
+            int postIdx = postRepository.createPostContents(postContentsForm);
             PostNewPostRes postNewPostRes = new PostNewPostRes(postIdx);
             return postNewPostRes;
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetPostContentsRes getPostContentsInfo(int postIdx) throws BaseException {
+
+        if (jwtService.getJwt() == null) {  // jwt가 없을 때
+
+            try {
+                PostContentsInfo postContentsInfo = postRepository.getPostContentsInfo(postIdx);
+                GetPostContentsRes getPostContentsRes = new GetPostContentsRes("NO", postContentsInfo, 0, null);
+                return getPostContentsRes;
+            } catch (Exception exception) {
+                throw new BaseException(DATABASE_ERROR);
+            }
+
+        } else {  // jwt 있을 때
+
+            int userIdx;
+
+            try {
+                userIdx = jwtService.getUserIdx();
+            } catch (Exception exception) {
+                throw new BaseException(INVALID_JWT);
+            }
+
+            if (postRepository.checkJoinedMember(postIdx, userIdx) == 0 ) { // 참여 안하는 회원
+
+                try {
+                    PostContentsInfo postContentsInfo = postRepository.getPostContentsInfo(postIdx);
+                    GetPostContentsRes getPostContentsRes = new GetPostContentsRes("NO", postContentsInfo, 0, null);
+                    return getPostContentsRes;
+                } catch (Exception exception) {
+                    throw new BaseException(DATABASE_ERROR);
+                }
+
+            } else { // 참여 하는 회원일 때
+
+                try {
+                    PostContentsInfo postContentsInfo = postRepository.getPostContentsInfo(postIdx);
+                    List<GetPostCommentRes> getPostCommentInfo = postRepository.getPostCommentInfo(postIdx);
+                    int countPostComment = postRepository.getCountPostComment(postIdx);
+                    GetPostContentsRes getPostContentsRes = new GetPostContentsRes("YES", postContentsInfo, countPostComment, getPostCommentInfo);
+                    return getPostContentsRes;
+                } catch (Exception exception) {
+                    throw new BaseException(DATABASE_ERROR);
+                }
+
+            }
         }
     }
 }

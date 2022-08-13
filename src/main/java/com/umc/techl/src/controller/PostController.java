@@ -3,6 +3,7 @@ package com.umc.techl.src.controller;
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.src.model.book.GetBookInfoRes;
+import com.umc.techl.src.model.post.GetPostContentsRes;
 import com.umc.techl.src.model.post.GetPostListRes;
 import com.umc.techl.src.model.post.PostNewPostReq;
 import com.umc.techl.src.model.post.PostNewPostRes;
@@ -79,6 +80,17 @@ public class PostController {
 
             PostNewPostRes postNewPostRes = postService.createPostContents(bookIdx, postNewPostReq);
             return new BaseResponse<>(postNewPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/{postIdx}")
+    public BaseResponse<GetPostContentsRes> getPostContentsInfo(@PathVariable("postIdx")int postIdx) {
+        try{
+            GetPostContentsRes getPostContentsRes = postService.getPostContentsInfo(postIdx);
+            return new BaseResponse<>(getPostContentsRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
