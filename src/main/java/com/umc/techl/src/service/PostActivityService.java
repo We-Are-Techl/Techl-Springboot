@@ -1,9 +1,7 @@
 package com.umc.techl.src.service;
 
 import com.umc.techl.config.BaseException;
-import com.umc.techl.src.model.forumActivity.GetForumActivityRes;
 import com.umc.techl.src.model.postActivity.GetPostActivityRes;
-import com.umc.techl.src.repository.ForumActivityRepository;
 import com.umc.techl.src.repository.PostActivityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

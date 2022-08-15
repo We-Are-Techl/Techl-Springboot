@@ -79,11 +79,8 @@ public class ForumActivityRepository {
                                         ra.getString("createdDate")
 
                                 ),userIdx),
-                        getMyForumCommentRes = this.jdbcTemplate.query("select distinct title, nickName, countUpvote, countComment, createdDate\n" +
-                                                                            "from (select forumIdx, froc.userIdx\n" +
-                                                                            "        from forumcomment as fc\n" +
-                                                                            "                left join forumreplyofcomment as froc on fc.forumCommentIdx = froc.forumCommentIdx\n" +
-                                                                            "        union all\n" +
+                        getMyForumCommentRes = this.jdbcTemplate.query("select distinct title, countComment, countUpvote, createdDate, nickName#글제목,댓글수,좋아요 수,작성일,작성자\n" +
+                                                                            "from (\n" +
                                                                             "        select forumIdx, userIdx\n" +
                                                                             "        from forumcomment) as countForumComment\n" +
                                                                             "                left join (select f.forumIdx, title, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
@@ -99,12 +96,8 @@ public class ForumActivityRepository {
                                                                             "                                    left join (select userIdx, nickName\n" +
                                                                             "                                                from user) as u on f.forumIdx = u.userIdx\n" +
                                                                             "                                    left join (select forumIdx,count(userIdx) as countComment\n" +
-                                                                            "                                                from (select forumIdx, froc.userIdx\n" +
-                                                                            "                                                        from forumcomment as fc\n" +
-                                                                            "                                                                left join forumreplyofcomment as froc on fc.forumCommentIdx = froc.forumCommentIdx\n" +
-                                                                            "                                                        where fc.status = 'ACTIVE' and froc.status = 'ACTIVE'\n" +
-                                                                            "                                                        union all\n" +
-                                                                            "                                                        select forumIdx, userIdx\n" +
+                                                                            "                                                from (\n" +
+                                                                            "                                                       select forumIdx, userIdx\n" +
                                                                             "                                                        from forumcomment\n" +
                                                                             "                                                        where status = 'ACTIVE') as countForumComment\n" +
                                                                             "                                                group by forumIdx) as cfc on f.forumIdx = cfc.forumIdx\n" +

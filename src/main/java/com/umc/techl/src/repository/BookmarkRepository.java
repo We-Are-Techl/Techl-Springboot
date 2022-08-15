@@ -4,8 +4,6 @@ import com.umc.techl.src.model.bookmark.BookBookmark;
 import com.umc.techl.src.model.bookmark.ForumBookmark;
 import com.umc.techl.src.model.bookmark.GetBookmarkRes;
 import com.umc.techl.src.model.bookmark.PostBookmark;
-import com.umc.techl.src.model.forumActivity.GetMyForumCommentRes;
-import com.umc.techl.src.model.forumActivity.GetMyForumRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
