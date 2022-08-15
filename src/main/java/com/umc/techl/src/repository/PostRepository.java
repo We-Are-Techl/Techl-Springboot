@@ -170,4 +170,13 @@ public class PostRepository {
                 postIdx
         );
     }
+
+    public int createPostComment(PostComment postComment) {
+        String createPostQuery = "insert into postcomment (postIdx, userIdx, content) VALUES (?,?,?)";
+        Object[] createPostParams = new Object[]{postComment.getPostIdx(), postComment.getUserIdx(), postComment.getContent()};
+        this.jdbcTemplate.update(createPostQuery, createPostParams);
+
+        String lastInserIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
+    }
 }

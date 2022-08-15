@@ -3,6 +3,8 @@ package com.umc.techl.src.controller;
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.src.model.book.GetBookInfoRes;
+import com.umc.techl.src.model.post.PostNewCommentReq;
+import com.umc.techl.src.model.post.PostNewCommentRes;
 import com.umc.techl.src.model.post.GetPostContentsRes;
 import com.umc.techl.src.model.post.GetPostListRes;
 import com.umc.techl.src.model.post.PostNewPostReq;
@@ -91,6 +93,28 @@ public class PostController {
         try{
             GetPostContentsRes getPostContentsRes = postService.getPostContentsInfo(postIdx);
             return new BaseResponse<>(getPostContentsRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @PostMapping("/{postIdx}/new-post-comment")
+    public BaseResponse<PostNewCommentRes> createNewPostComment(@PathVariable("postIdx")int postIdx,
+                                                                 @RequestBody PostNewCommentReq postNewCommentReq) {
+
+        try{
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            if (postNewCommentReq.getContent() == null || postNewCommentReq.getContent().length() == 0) {
+                throw new BaseException(POST_EMPTY_CONTENTS);
+            }
+
+            PostNewCommentRes postNewCommentRes = postService.createNewPostComment(postIdx, postNewCommentReq);
+            return new BaseResponse<>(postNewCommentRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

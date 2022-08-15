@@ -82,7 +82,7 @@ public class PostService {
                 throw new BaseException(INVALID_JWT);
             }
 
-            if (postRepository.checkJoinedMember(postIdx, userIdx) == 0 ) { // 참여 안하는 회원
+            if (postRepository.checkJoinedMember(postIdx, userIdx) == 0) { // 참여 안하는 회원
 
                 try {
                     PostContentsInfo postContentsInfo = postRepository.getPostContentsInfo(postIdx);
@@ -105,6 +105,28 @@ public class PostService {
                 }
 
             }
+        }
+    }
+
+    public PostNewCommentRes createNewPostComment(int postIdx_, PostNewCommentReq postNewCommentReq) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        if(postRepository.checkJoinedMember(postIdx_, jwtService.getUserIdx()) == 0) { // 북마크에 참여하지 않는 유저이면 댓글 작성 못함
+            throw new BaseException(INVALID_USER_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            PostComment postComment = new PostComment(postIdx_, userIdx, postNewCommentReq.getContent());
+            int postIdx = postRepository.createPostComment(postComment);
+            PostNewCommentRes postNewCommentRes = new PostNewCommentRes(postIdx);
+            return postNewCommentRes;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 }
