@@ -129,4 +129,20 @@ public class PostService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void joinContents(int postIdx) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            JoinPost joinPost = new JoinPost(postIdx, userIdx);
+            postRepository.joinContents(joinPost);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

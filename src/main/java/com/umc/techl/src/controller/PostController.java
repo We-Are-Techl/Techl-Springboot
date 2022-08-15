@@ -2,6 +2,7 @@ package com.umc.techl.src.controller;
 
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
+import com.umc.techl.config.BaseResponseStatus;
 import com.umc.techl.src.model.book.GetBookInfoRes;
 import com.umc.techl.src.model.post.PostNewCommentReq;
 import com.umc.techl.src.model.post.PostNewCommentRes;
@@ -116,6 +117,21 @@ public class PostController {
             PostNewCommentRes postNewCommentRes = postService.createNewPostComment(postIdx, postNewCommentReq);
             return new BaseResponse<>(postNewCommentRes);
         } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @PostMapping("/{postIdx}/join-contents")
+    public BaseResponse joinContents(@PathVariable("postIdx") int postIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            postService.joinContents(postIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }

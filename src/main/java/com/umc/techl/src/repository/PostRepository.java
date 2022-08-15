@@ -179,4 +179,24 @@ public class PostRepository {
         String lastInserIdQuery = "select last_insert_id()";
         return this.jdbcTemplate.queryForObject(lastInserIdQuery,int.class);
     }
+
+    public void joinContents(JoinPost joinPost) {
+        String joinContentsQuery = "SELECT EXISTS(SELECT * from joincontents WHERE postIdx=? and userIdx=?) as RESULT";
+        Object[] joinContentsParams = new Object[]{joinPost.getPostIdx(), joinPost.getUserIdx()};
+
+        String joinContentsStatusQuery = "select status from joincontents where postIdx=? and userIdx=?";
+
+        if (this.jdbcTemplate.queryForObject(joinContentsQuery, joinContentsParams, Integer.class) == 0) {     //join이 안돼있을 때
+            String newJoinQuery = "insert into joincontents (postIdx, userIdx) VALUES (?,?)";
+            this.jdbcTemplate.update(newJoinQuery, joinContentsParams);
+        } else {    //join이 돼있을 때
+            if (this.jdbcTemplate.queryForObject(joinContentsStatusQuery, joinContentsParams, String.class).equals("ACTIVE")) {
+                String bookmarkActiveUpdateQuery = "update joincontents set status='INACTIVE' where postIdx=? and userIdx=?";
+                this.jdbcTemplate.update(bookmarkActiveUpdateQuery, joinContentsParams);
+            } else {
+                String bookmarkInactiveUpdateQuery = "update joincontents set status='ACTIVE' where postIdx=? and userIdx=?";
+                this.jdbcTemplate.update(bookmarkInactiveUpdateQuery, joinContentsParams);
+            }
+        }
+    }
 }
