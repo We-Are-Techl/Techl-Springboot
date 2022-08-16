@@ -145,4 +145,20 @@ public class PostService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void bookmark(int postIdx) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            PostBookmark postBookmark = new PostBookmark(userIdx, postIdx, "POST");
+            postRepository.bookmark(postBookmark);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

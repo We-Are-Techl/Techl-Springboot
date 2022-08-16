@@ -135,4 +135,19 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    @PostMapping("/{postIdx}/bookmark")
+    public BaseResponse bookmark(@PathVariable("postIdx") int postIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            postService.bookmark(postIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }
