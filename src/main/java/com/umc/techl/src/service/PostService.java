@@ -161,4 +161,20 @@ public class PostService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void postCommentUpvote(int postCommentIdx) throws BaseException {
+        try {
+            jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        try {
+            int userIdx = jwtService.getUserIdx();
+            PostCommentUpvote postCommentUpvote = new PostCommentUpvote(postCommentIdx, userIdx);
+            postRepository.postCommentUpvote(postCommentUpvote);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

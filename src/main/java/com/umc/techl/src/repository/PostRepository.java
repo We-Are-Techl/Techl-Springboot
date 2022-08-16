@@ -191,11 +191,11 @@ public class PostRepository {
             this.jdbcTemplate.update(newJoinQuery, joinContentsParams);
         } else {    //join이 돼있을 때
             if (this.jdbcTemplate.queryForObject(joinContentsStatusQuery, joinContentsParams, String.class).equals("ACTIVE")) {
-                String bookmarkActiveUpdateQuery = "update joincontents set status='INACTIVE' where postIdx=? and userIdx=?";
-                this.jdbcTemplate.update(bookmarkActiveUpdateQuery, joinContentsParams);
+                String joinActiveUpdateQuery = "update joincontents set status='INACTIVE' where postIdx=? and userIdx=?";
+                this.jdbcTemplate.update(joinActiveUpdateQuery, joinContentsParams);
             } else {
-                String bookmarkInactiveUpdateQuery = "update joincontents set status='ACTIVE' where postIdx=? and userIdx=?";
-                this.jdbcTemplate.update(bookmarkInactiveUpdateQuery, joinContentsParams);
+                String joinInactiveUpdateQuery = "update joincontents set status='ACTIVE' where postIdx=? and userIdx=?";
+                this.jdbcTemplate.update(joinInactiveUpdateQuery, joinContentsParams);
             }
         }
     }
@@ -216,6 +216,26 @@ public class PostRepository {
             } else {
                 String bookmarkInactiveUpdateQuery = "update bookmark set status='ACTIVE' where userIdx=? and contentIdx=? and type=?";
                 this.jdbcTemplate.update(bookmarkInactiveUpdateQuery, bookmarkParams);
+            }
+        }
+    }
+
+    public void postCommentUpvote(PostCommentUpvote postCommentUpvote) {
+        String postCommentUpvoteQuery = "SELECT EXISTS(SELECT * from postcommentupvote WHERE postCommentIdx=? and userIdx=?) as RESULT";
+        Object[] postCommentUpvoteParams = new Object[]{postCommentUpvote.getPostCommentIdx(), postCommentUpvote.getUserIdx()};
+
+        String postCommentUpvoteStatusQuery = "select status from postcommentupvote where postCommentIdx=? and userIdx=?";
+
+        if (this.jdbcTemplate.queryForObject(postCommentUpvoteQuery, postCommentUpvoteParams, Integer.class) == 0) {     //좋아요가 안돼있을 때
+            String newPostCommentUpvoteQuery = "insert into postcommentupvote (postCommentIdx, userIdx) VALUES (?,?)";
+            this.jdbcTemplate.update(newPostCommentUpvoteQuery, postCommentUpvoteParams);
+        } else {    //좋아요가 돼있을 때
+            if (this.jdbcTemplate.queryForObject(postCommentUpvoteStatusQuery, postCommentUpvoteParams, String.class).equals("ACTIVE")) {
+                String postCommentUpvoteActiveUpdateQuery = "update postcommentupvote set status='INACTIVE' where postCommentIdx=? and userIdx=?";
+                this.jdbcTemplate.update(postCommentUpvoteActiveUpdateQuery, postCommentUpvoteParams);
+            } else {
+                String postCommentUpvoteInactiveUpdateQuery = "update postcommentupvote set status='ACTIVE' where postCommentIdx=? and userIdx=?";
+                this.jdbcTemplate.update(postCommentUpvoteInactiveUpdateQuery, postCommentUpvoteParams);
             }
         }
     }

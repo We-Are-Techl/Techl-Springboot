@@ -150,4 +150,19 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    @PostMapping("/post-comment-upvote/{postCommentIdx}")
+    public BaseResponse postCommentUpvote(@PathVariable("postCommentIdx") int postCommentIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            postService.postCommentUpvote(postCommentIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }
