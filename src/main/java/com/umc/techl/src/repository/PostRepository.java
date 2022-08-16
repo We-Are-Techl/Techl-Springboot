@@ -140,7 +140,7 @@ public class PostRepository {
     }
 
     public List<GetPostCommentRes> getPostCommentInfo(int postIdx) {
-        String postCommentInfoQuery = "select nickName, createdAt, content, countUpvote\n" +
+        String postCommentInfoQuery = "select pc.postCommentIdx, nickName, createdAt, content, countUpvote\n" +
                                         "from postcomment as pc\n" +
                                         "        left join (select useridx, nickName\n" +
                                         "                    from user) as u on pc.userIdx = u.userIdx\n" +
@@ -152,6 +152,7 @@ public class PostRepository {
 
         return this.jdbcTemplate.query(postCommentInfoQuery,
                 (rs, rowNum) -> new GetPostCommentRes(
+                        rs.getInt("postCommentIdx"),
                         rs.getString("nickName"),
                         rs.getString("createdAt"),
                         rs.getString("content"),

@@ -137,7 +137,7 @@ public class ForumController {
         }
     }
 
-    @PostMapping("/{forumCommentIdx}/forum-comment-upvote")
+    @PostMapping("/forum-comment-upvote/{forumCommentIdx}")
     public BaseResponse forumCommentUpvote(@PathVariable("forumCommentIdx") int forumCommentIdx) {
         try {
             String accessToken = jwtService.getJwt();
