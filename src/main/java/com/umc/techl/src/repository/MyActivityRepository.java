@@ -32,17 +32,17 @@ public class MyActivityRepository {
                 (rs, rowNum) -> new GetMyActivityRes(
                         rs.getString("nickName"),
                         myForumInfo = this.jdbcTemplate.query("select countForum, countForumComment\n" +
-                                                                "from user as u\n" +
+                                                                "from User as u\n" +
                                                                 "        left join (select u_.userIdx, if(countForum is null, 0, countForum) as countForum\n" +
-                                                                "                    from user as u_\n" +
+                                                                "                    from User as u_\n" +
                                                                 "                            left join(select userIdx, count(*) as countForum\n" +
-                                                                "                                        from forum as f\n" +
+                                                                "                                        from Forum as f\n" +
                                                                 "                                        where f.status = 'ACTIVE'\n" +
                                                                 "                                        group by f.userIdx) as cf on u_.userIdx = cf.userIdx)\n" +
                                                                 "                    as cf_ on u.userIdx = cf_.userIdx\n" +
                                                                 "\n" +
                                                                 "        left join (select u_.userIdx, if(countForumComment is null, 0, countForumComment) as countForumComment\n" +
-                                                                "                    from user as u_\n" +
+                                                                "                    from User as u_\n" +
                                                                 "                            left join (select userIdx, count(*) as countForumComment\n" +
                                                                 "                                        from ForumComment as fc\n" +
                                                                 "                                        where fc.status = 'ACTIVE'\n" +
@@ -100,15 +100,15 @@ public class MyActivityRepository {
                                                                     "if(countForumBookmark is null, 0, countForumBookmark) as countForumBookmark\n" +
                                                                     "from User as u\n" +
                                                                     "    left join (select userIdx,count(*) as countBookBookmark\n" +
-                                                                    "        from bookmark\n" +
+                                                                    "        from Bookmark\n" +
                                                                     "        where type = 'BOOK' and status = 'ACTIVE'\n" +
                                                                     "        group by userIdx) as cbb on u.userIdx = cbb.userIdx\n" +
                                                                     "     left join (select userIdx,count(*) as countPostBookmark\n" +
-                                                                    "                        from bookmark\n" +
+                                                                    "                        from Bookmark\n" +
                                                                     "                        where type = 'POST' and status = 'ACTIVE'\n" +
                                                                     "                        group by userIdx) as cpb on u.userIdx = cpb.userIdx\n" +
                                                                     "            left join (select userIdx,count(*) as countForumBookmark\n" +
-                                                                    "                        from bookmark\n" +
+                                                                    "                        from Bookmark\n" +
                                                                     "                        where type = 'FORUM' and status = 'ACTIVE'\n" +
                                                                     "                        group by userIdx) as cfb on u.userIdx = cfb.userIdx\n" +
                                                                     "where u.userIdx = ?",

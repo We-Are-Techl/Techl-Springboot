@@ -23,7 +23,5 @@ public class ForumActivityService {
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-//        GetForumActivityRes getForumActivityRes = forumActivityRepository.getForumInfo(userIdx);
-//        return getForumActivityRes;
     }
 }

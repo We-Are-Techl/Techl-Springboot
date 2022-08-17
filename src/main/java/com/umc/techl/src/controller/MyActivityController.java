@@ -3,13 +3,12 @@ package com.umc.techl.src.controller;
 import com.umc.techl.config.BaseException;
 import com.umc.techl.config.BaseResponse;
 import com.umc.techl.src.model.myActivity.GetMyActivityRes;
-import com.umc.techl.src.model.postActivity.GetPostActivityRes;
 import com.umc.techl.src.service.MyActivityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("my-activity")
+@RequestMapping("/my-activity")
 @RequiredArgsConstructor
 public class MyActivityController {
 
@@ -25,5 +24,6 @@ public class MyActivityController {
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
+
     }
 }

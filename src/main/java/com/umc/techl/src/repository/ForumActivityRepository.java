@@ -3,7 +3,6 @@ package com.umc.techl.src.repository;
 import com.umc.techl.src.model.forumActivity.GetForumActivityRes;
 import com.umc.techl.src.model.forumActivity.GetMyForumCommentRes;
 import com.umc.techl.src.model.forumActivity.GetMyForumRes;
-import com.umc.techl.src.user.model.GetUserRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -26,17 +25,17 @@ public class ForumActivityRepository {
 
     public GetForumActivityRes getForumInfo(int userIdx) {
         String getUsersQuery = "select countForum, countForumComment\n" +
-                                "from user as u\n" +
+                                "from User as u\n" +
                                 "        left join (select u_.userIdx, if(countForum is null, 0, countForum) as countForum\n" +
-                                "                    from user as u_\n" +
+                                "                    from User as u_\n" +
                                 "                            left join(select userIdx, count(*) as countForum\n" +
-                                "                                        from forum as f\n" +
+                                "                                        from Forum as f\n" +
                                 "                                        where f.status = 'ACTIVE'\n" +
                                 "                                        group by f.userIdx) as cf on u_.userIdx = cf.userIdx)\n" +
                                 "                    as cf_ on u.userIdx = cf_.userIdx\n" +
                                 "\n" +
                                 "        left join (select u_.userIdx, if(countForumComment is null, 0, countForumComment) as countForumComment\n" +
-                                "                    from user as u_\n" +
+                                "                    from User as u_\n" +
                                 "                            left join (select userIdx, count(*) as countForumComment\n" +
                                 "                                        from ForumComment as fc\n" +
                                 "                                        where fc.status = 'ACTIVE'\n" +
@@ -57,16 +56,16 @@ public class ForumActivityRepository {
                                                                     "            when timestampdiff(year, createdAt, current_timestamp) > 0 then concat(timestampdiff(year, createdAt, current_timestamp), '년 전')\n" +
                                                                     "            else DATE_FORMAT(createdAt, '%m/%d')\n" +
                                                                     "        end as createdDate\n" +
-                                                                    "from forum as f\n" +
+                                                                    "from Forum as f\n" +
                                                                     "        left join (select userIdx, nickName\n" +
-                                                                    "                    from user) as u on f.forumIdx = u.userIdx\n" +
+                                                                    "                    from User) as u on f.forumIdx = u.userIdx\n" +
                                                                     "        left join (select forumIdx, count(*) as countComment\n" +
-                                                                    "                    from forumcomment\n" +
-                                                                    "                    where forumcomment.status = 'ACTIVE'\n" +
+                                                                    "                    from ForumComment\n" +
+                                                                    "                    where ForumComment.status = 'ACTIVE'\n" +
                                                                     "                    group by forumIdx) as fc on f.forumIdx = fc.forumIdx\n" +
                                                                     "        left join (select forumIdx, count(*) as countUpvote\n" +
-                                                                    "                    from forumupvote\n" +
-                                                                    "                    where forumupvote.status = 'ACTIVE'\n" +
+                                                                    "                    from ForumUpvote\n" +
+                                                                    "                    where ForumUpvote.status = 'ACTIVE'\n" +
                                                                     "                    group by forumIdx) as fu on f.forumIdx = fu.forumIdx\n" +
                                                                     "where f.status = 'ACTIVE' and f.userIdx = ?\n" +
                                                                     "group by f.forumIdx\n" +
@@ -79,10 +78,10 @@ public class ForumActivityRepository {
                                         ra.getString("createdDate")
 
                                 ),userIdx),
-                        getMyForumCommentRes = this.jdbcTemplate.query("select distinct title, countComment, countUpvote, createdDate, nickName#글제목,댓글수,좋아요 수,작성일,작성자\n" +
+                        getMyForumCommentRes = this.jdbcTemplate.query("select distinct title, countComment, countUpvote, createdDate, nickName\n" +
                                                                             "from (\n" +
                                                                             "        select forumIdx, userIdx\n" +
-                                                                            "        from forumcomment) as countForumComment\n" +
+                                                                            "        from ForumComment) as countForumComment\n" +
                                                                             "                left join (select f.forumIdx, title, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
                                                                             "if(countComment is null, 0, countComment) as countComment,\n" +
                                                                             "                                    case\n" +
@@ -92,21 +91,21 @@ public class ForumActivityRepository {
                                                                             "                                        when timestampdiff(year, createdAt,current_timestamp) > 0 then concat(timestampdiff(year, createdAt,current_timestamp), '년 전')\n" +
                                                                             "                                        else DATE_FORMAT(createdAt, '%m/%d')\n" +
                                                                             "                                    end as createdDate\n" +
-                                                                            "                            from forum as f\n" +
+                                                                            "                            from Forum as f\n" +
                                                                             "                                    left join (select userIdx, nickName\n" +
-                                                                            "                                                from user) as u on f.forumIdx = u.userIdx\n" +
+                                                                            "                                                from User) as u on f.forumIdx = u.userIdx\n" +
                                                                             "                                    left join (select forumIdx,count(userIdx) as countComment\n" +
                                                                             "                                                from (\n" +
                                                                             "                                                       select forumIdx, userIdx\n" +
-                                                                            "                                                        from forumcomment\n" +
+                                                                            "                                                        from ForumComment\n" +
                                                                             "                                                        where status = 'ACTIVE') as countForumComment\n" +
                                                                             "                                                group by forumIdx) as cfc on f.forumIdx = cfc.forumIdx\n" +
                                                                             "                                    left join (select forumIdx,count(*) as countUpvote\n" +
-                                                                            "                                                from forumupvote\n" +
-                                                                            "                                                where forumupvote.status = 'ACTIVE'\n" +
+                                                                            "                                                from ForumUpvote\n" +
+                                                                            "                                                where ForumUpvote.status = 'ACTIVE'\n" +
                                                                             "                                                group by forumIdx) as fu on f.forumIdx = fu.forumIdx\n" +
                                                                             "                                    left join (select bookIdx, title as bookTitle\n" +
-                                                                            "                                                from book) as bk on f.bookIdx = bk.bookIdx\n" +
+                                                                            "                                                from Book) as bk on f.bookIdx = bk.bookIdx\n" +
                                                                             "                            where f.status = 'ACTIVE'\n" +
                                                                             "                            group by f.forumIdx) as forumList on countForumComment.forumIdx = forumList.forumIdx\n" +
                                                                             "where countForumComment.userIdx = ?\n" +

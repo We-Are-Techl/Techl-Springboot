@@ -22,7 +22,6 @@ public class BookmarkService {
         } catch (Exception exception) {
             throw new BaseException(DATABASE_ERROR);
         }
-
     }
 
 }
