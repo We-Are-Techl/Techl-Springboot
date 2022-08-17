@@ -240,4 +240,18 @@ public class PostRepository {
             }
         }
     }
+
+    public int getPostUserIdx(int postIdx) {
+        String getPostUserIdxQuery = "select userIdx from post where postIdx = ?";
+
+        return this.jdbcTemplate.queryForObject(getPostUserIdxQuery,
+                int.class,
+                postIdx
+        );
+    }
+
+    public void postDelete(int postIdx) {
+        String postDeleteQuery = "delete from post where postIdx = ?";
+        this.jdbcTemplate.update(postDeleteQuery, postIdx);
+    }
 }
