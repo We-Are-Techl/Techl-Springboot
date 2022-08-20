@@ -8,10 +8,14 @@ import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.service.ForumService;
 import com.umc.techl.utils.JwtService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
 
 import static com.umc.techl.config.BaseResponseStatus.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/forum")
 @RequiredArgsConstructor
@@ -51,7 +55,8 @@ public class ForumController {
     @ResponseBody
     @PostMapping("/new-forum/create")
     public BaseResponse<PostForumContentsRes> createForumContents(@RequestParam int bookIdx,
-                                                                  @RequestBody PostForumContentsReq postForumContentsReq) {
+                                                                  @RequestPart PostForumContentsReq postForumContentsReq,
+                                                                  @RequestPart(required = false) MultipartFile multipartFile) {
 
         try{
             String accessToken = jwtService.getJwt();
@@ -67,7 +72,7 @@ public class ForumController {
                 throw new BaseException(POST_EMPTY_CONTENTS);
             }
 
-            PostForumContentsRes postForumContentsRes = forumService.createForumContents(bookIdx, postForumContentsReq);
+            PostForumContentsRes postForumContentsRes = forumService.createForumContents(bookIdx, postForumContentsReq, multipartFile);
             return new BaseResponse<>(postForumContentsRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));

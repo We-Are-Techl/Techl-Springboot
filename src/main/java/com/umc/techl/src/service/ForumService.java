@@ -6,18 +6,23 @@ import com.umc.techl.src.model.book.GetBookTitleRes;
 import com.umc.techl.src.model.forum.*;
 import com.umc.techl.src.repository.ForumRepository;
 import com.umc.techl.utils.JwtService;
+import com.umc.techl.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 import static com.umc.techl.config.BaseResponseStatus.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ForumService {
 
     private final JwtService jwtService;
+    private final S3Uploader s3Uploader;
     private final ForumRepository forumRepository;
 
     public GetForumInfoRes getForumInfo(int bookIdx) throws BaseException {
@@ -40,7 +45,9 @@ public class ForumService {
         }
     }
 
-    public PostForumContentsRes createForumContents(int bookIdx, PostForumContentsReq contents) throws BaseException {
+    public PostForumContentsRes createForumContents(int bookIdx, PostForumContentsReq contents, MultipartFile multipartFile) throws BaseException {
+
+        String imageUrl = null;
 
         try {
             jwtService.getUserIdx();
@@ -48,9 +55,17 @@ public class ForumService {
             throw new BaseException(INVALID_JWT);
         }
 
+        if(!multipartFile.isEmpty()) {
+            try {
+                imageUrl = s3Uploader.upload(multipartFile, "static");
+            } catch (Exception exception) {
+                throw new BaseException(IMAGE_UPLOAD_ERROR);
+            }
+        }
+
         try {
             int userIdx = jwtService.getUserIdx();
-            ForumContents forumContents = new ForumContents(bookIdx, userIdx, contents.getTitle(), contents.getContent(), contents.getContentsImage());
+            ForumContents forumContents = new ForumContents(bookIdx, userIdx, contents.getTitle(), contents.getContent(), imageUrl);
             int forumIdx = forumRepository.createForumContents(forumContents);
             PostForumContentsRes postForumContentsRes = new PostForumContentsRes(forumIdx);
             return postForumContentsRes;

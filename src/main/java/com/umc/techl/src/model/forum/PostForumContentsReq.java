@@ -10,5 +10,4 @@ import lombok.Setter;
 public class PostForumContentsReq {
     private String title;
     private String content;
-    private String contentsImage;
 }

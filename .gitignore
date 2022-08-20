@@ -3,3 +3,4 @@
 /build/
 /build/classes/java/main/
 /src/main/java/com/umc/techl/config/secret/Secret.java
+/src/main/resources/application.yml
