@@ -228,16 +228,16 @@ public class ForumRepository {
     }
 
     public int getForumCommentUserIdx(int forumCommentIdx) {
-        String getForumUserIdxQuery = "select userIdx from forumcomment where forumCommentIdx = ?";
+        String getForumCommentUserIdxQuery = "select userIdx from forumcomment where forumCommentIdx = ?";
 
-        return this.jdbcTemplate.queryForObject(getForumUserIdxQuery,
+        return this.jdbcTemplate.queryForObject(getForumCommentUserIdxQuery,
                 int.class,
                 forumCommentIdx
         );
     }
 
     public void forumCommentDelete(int forumCommentIdx) {
-        String forumDeleteQuery = "delete from forumcomment where forumCommentIdx = ?";
-        this.jdbcTemplate.update(forumDeleteQuery, forumCommentIdx);
+        String forumCommentDeleteQuery = "delete from forumcomment where forumCommentIdx = ?";
+        this.jdbcTemplate.update(forumCommentDeleteQuery, forumCommentIdx);
     }
 }

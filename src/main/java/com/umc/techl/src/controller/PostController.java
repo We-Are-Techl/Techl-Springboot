@@ -180,4 +180,19 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    @DeleteMapping("/delete-postComment/{postCommentIdx}")
+    public BaseResponse deletePostComment(@PathVariable("postCommentIdx")int postCommentIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            postService.postCommentDelete(postCommentIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

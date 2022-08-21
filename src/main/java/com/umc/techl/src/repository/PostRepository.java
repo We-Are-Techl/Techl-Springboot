@@ -254,4 +254,18 @@ public class PostRepository {
         String postDeleteQuery = "delete from post where postIdx = ?";
         this.jdbcTemplate.update(postDeleteQuery, postIdx);
     }
+
+    public int getPostCommentUserIdx(int postCommentIdx) {
+        String getPostCommentUserIdxQuery = "select userIdx from postcomment where postCommentIdx = ?";
+
+        return this.jdbcTemplate.queryForObject(getPostCommentUserIdxQuery,
+                int.class,
+                postCommentIdx
+        );
+    }
+
+    public void postCommentDelete(int postCommentIdx) {
+        String postCommentDeleteQuery = "delete from postcomment where postCommentIdx = ?";
+        this.jdbcTemplate.update(postCommentDeleteQuery, postCommentIdx);
+    }
 }

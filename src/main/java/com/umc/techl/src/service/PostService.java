@@ -198,4 +198,25 @@ public class PostService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void postCommentDelete(int postCommentIdx) throws BaseException {
+
+        int JwtUserIdx;
+
+        try {
+            JwtUserIdx = jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        if(JwtUserIdx != postRepository.getPostCommentUserIdx(postCommentIdx)) {
+            throw new BaseException(INVALID_USER_JWT);
+        }
+
+        try {
+            postRepository.postCommentDelete(postCommentIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
