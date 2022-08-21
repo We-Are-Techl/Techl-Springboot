@@ -8,6 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class GetForumCommentRes {
+    private int forumCommentIdx;
     private String nickName;
     private String createdAt;
     private String content;

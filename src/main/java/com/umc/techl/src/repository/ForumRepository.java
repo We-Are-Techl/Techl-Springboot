@@ -125,15 +125,16 @@ public class ForumRepository {
                         rs.getString("title"),
                         rs.getString("content"),
                         rs.getString("contentsImage"),
-                        getForumCommentRes = this.jdbcTemplate.query("select nickName, DATE_FORMAT(createdAt, '%Y.%m.%d %H:%i') as createdAt, content, countUpvote\n" +
+                        getForumCommentRes = this.jdbcTemplate.query("select fc.forumCommentIdx, nickName, DATE_FORMAT(createdAt, '%Y.%m.%d %H:%i') as createdAt, content, countUpvote\n" +
                                                                         "from forumcomment as fc\n" +
                                                                         "         left join (select userIdx, nickName\n" +
                                                                         "                    from user) as u on fc.userIdx = u.userIdx\n" +
-                                                                        "         left join (select forumCommentIdx,count(*) as countUpvote\n" +
+                                                                        "         left join (select forumCommentIdx, count(*) as countUpvote\n" +
                                                                         "                    from forumcommentupvote\n" +
                                                                         "                    group by forumCommentIdx) as fcu on fc.forumCommentIdx = fcu.forumCommentIdx\n" +
                                                                         "where forumIdx = ?\n",
                                 (ra, rownum) -> new GetForumCommentRes(
+                                        ra.getInt("forumCommentIdx"),
                                         ra.getString("nickName"),
                                         ra.getString("createdAt"),
                                         ra.getString("content"),
