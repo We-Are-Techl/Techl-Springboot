@@ -171,4 +171,19 @@ public class ForumController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    @DeleteMapping("/delete-forumComment/{forumCommentIdx}")
+    public BaseResponse deleteForumComment(@PathVariable("forumCommentIdx")int forumCommentIdx) {
+        try {
+            String accessToken = jwtService.getJwt();
+            if(accessToken == null || accessToken.length() == 0){
+                throw new BaseException(EMPTY_JWT);
+            }
+
+            forumService.deleteForumComment(forumCommentIdx);
+            return new BaseResponse<>(BaseResponseStatus.SUCCESS);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

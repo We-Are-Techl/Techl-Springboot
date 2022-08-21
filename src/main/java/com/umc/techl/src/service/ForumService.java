@@ -169,4 +169,25 @@ public class ForumService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void deleteForumComment(int forumCommentIdx) throws BaseException {
+
+        int JwtUserIdx;
+
+        try {
+            JwtUserIdx = jwtService.getUserIdx();
+        } catch (Exception exception) {
+            throw new BaseException(INVALID_JWT);
+        }
+
+        if(JwtUserIdx != forumRepository.getForumCommentUserIdx(forumCommentIdx)) {
+            throw new BaseException(INVALID_USER_JWT);
+        }
+
+        try {
+            forumRepository.forumCommentDelete(forumCommentIdx);
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
