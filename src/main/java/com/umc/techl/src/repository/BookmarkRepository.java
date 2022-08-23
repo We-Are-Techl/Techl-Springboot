@@ -31,15 +31,15 @@ public class BookmarkRepository {
                         "if(countForumBookmark is null, 0, countForumBookmark) as countForumBookmark\n" +
                         "from User as u\n" +
                         "    left join (select userIdx,count(*) as countBookBookmark\n" +
-                        "        from Bookmark\n" +
+                        "        from bookmark\n" +
                         "        where type = 'BOOK' and status = 'ACTIVE'\n" +
                         "        group by userIdx) as cbb on u.userIdx = cbb.userIdx\n" +
                         "     left join (select userIdx,count(*) as countPostBookmark\n" +
-                        "                        from Bookmark\n" +
+                        "                        from bookmark\n" +
                         "                        where type = 'POST' and status = 'ACTIVE'\n" +
                         "                        group by userIdx) as cpb on u.userIdx = cpb.userIdx\n" +
                         "            left join (select userIdx,count(*) as countForumBookmark\n" +
-                        "                        from Bookmark\n" +
+                        "                        from bookmark\n" +
                         "                        where type = 'FORUM' and status = 'ACTIVE'\n" +
                         "                        group by userIdx) as cfb on u.userIdx = cfb.userIdx\n" +
                         "where u.userIdx = ?";
@@ -50,7 +50,7 @@ public class BookmarkRepository {
                         rs.getInt("countPostBookmark"),
                         rs.getInt("countForumBookmark"),
                         getBookBookmark = this.jdbcTemplate.query("select title, cover, author\n" +
-                                        "from Bookmark as bm\n" +
+                                        "from bookmark as bm\n" +
                                         "        left join (select bookIdx, title, cover, author\n" +
                                         "                    from Book) as b on b.bookIdx = bm.contentIdx\n" +
                                         "where type = 'BOOK' and bm.status = 'ACTIVE' and bm.userIdx = ?\n" +
@@ -61,9 +61,9 @@ public class BookmarkRepository {
                                         rs1.getString("author")
                                 ), userIdx),
                         getPostBookmark = this.jdbcTemplate.query("select title, cover, author\n" +
-                                        "from Bookmark as bm\n" +
+                                        "from bookmark as bm\n" +
                                         "        left join (select bookIdx, title, cover, author\n" +
-                                        "                    from Book) as b on b.bookIdx = bm.contentIdx\n" +
+                                        "                    from book) as b on b.bookIdx = bm.contentIdx\n" +
                                         "where type = 'POST' and bm.status = 'ACTIVE' and bm.userIdx = ?\n" +
                                         "order by bm.createdAt desc;",
                                 ((rs2, rownum) -> new PostBookmark(
@@ -72,9 +72,9 @@ public class BookmarkRepository {
                                         rs2.getString("author")
                                 )), userIdx),
                         getForumBookmark = this.jdbcTemplate.query("select title, cover, author\n" +
-                                        "from Bookmark as bm\n" +
+                                        "from bookmark as bm\n" +
                                         "        left join (select bookIdx, title, cover, author\n" +
-                                        "                    from Book) as b on b.bookIdx = bm.contentIdx\n" +
+                                        "                    from book) as b on b.bookIdx = bm.contentIdx\n" +
                                         "where type = 'FORUM' and bm.status = 'ACTIVE' and bm.userIdx = ?\n" +
                                         "order by bm.createdAt desc;",
                                 (rs3, rownum) -> new ForumBookmark(

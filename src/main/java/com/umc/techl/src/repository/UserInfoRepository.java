@@ -21,7 +21,7 @@ public class UserInfoRepository {
 
     public GetUserInfoRes getUserInfo(int userIdx) {
         String getUsersQuery = "select nickName, phoneNumber, userJob\n" +
-                "from User as u\n" +
+                "from user as u\n" +
                 "WHERE u.userIdx = ? and status ='ACTIVE'";
 
         return this.jdbcTemplate.queryForObject(getUsersQuery,

@@ -25,26 +25,26 @@ public class MyActivityRepository {
 
     public GetMyActivityRes getMyActivityInfo(int userIdx) {
         String getQuery = "select nickName\n" +
-                        "from User as u\n" +
+                        "from user as u\n" +
                         "WHERE u.userIdx = ? and status ='ACTIVE'";
 
         return this.jdbcTemplate.queryForObject(getQuery,
                 (rs, rowNum) -> new GetMyActivityRes(
                         rs.getString("nickName"),
                         myForumInfo = this.jdbcTemplate.query("select countForum, countForumComment\n" +
-                                                                "from User as u\n" +
+                                                                "from user as u\n" +
                                                                 "        left join (select u_.userIdx, if(countForum is null, 0, countForum) as countForum\n" +
-                                                                "                    from User as u_\n" +
+                                                                "                    from user as u_\n" +
                                                                 "                            left join(select userIdx, count(*) as countForum\n" +
-                                                                "                                        from Forum as f\n" +
+                                                                "                                        from forum as f\n" +
                                                                 "                                        where f.status = 'ACTIVE'\n" +
                                                                 "                                        group by f.userIdx) as cf on u_.userIdx = cf.userIdx)\n" +
                                                                 "                    as cf_ on u.userIdx = cf_.userIdx\n" +
                                                                 "\n" +
                                                                 "        left join (select u_.userIdx, if(countForumComment is null, 0, countForumComment) as countForumComment\n" +
-                                                                "                    from User as u_\n" +
+                                                                "                    from user as u_\n" +
                                                                 "                            left join (select userIdx, count(*) as countForumComment\n" +
-                                                                "                                        from ForumComment as fc\n" +
+                                                                "                                        from forumComment as fc\n" +
                                                                 "                                        where fc.status = 'ACTIVE'\n" +
                                                                 "                                        group by fc.userIdx) as cfc on u_.userIdx = cfc.userIdx)\n" +
                                                                 "                    as cfc_ on u.userIdx = cfc_.userIdx\n" +
@@ -57,33 +57,33 @@ public class MyActivityRepository {
                                                                 "        if(completionCount is null,0, completionCount) as completionCount,\n" +
                                                                 "       if(announcementCount is null,0, announcementCount) as announcementCount,\n" +
                                                                 "       if(commentCount is null,0, commentCount) as commentCount\n" +
-                                                                "from User as u\n" +
+                                                                "from user as u\n" +
                                                                 "    left join (select jc.userIdx, count(*) as participationCount\n" +
-                                                                "                from JoinContents as jc\n" +
-                                                                "                left join (select postIdx from Post as p where p.status != 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
-                                                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
+                                                                "                from joinContents as jc\n" +
+                                                                "                left join (select postIdx from post as p where p.status != 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
+                                                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
                                                                 "                where jc.status = 'ACTIVE' and p.postIdx = jc.postIdx and U.status is not null\n" +
                                                                 "                group by jc.userIdx\n" +
                                                                 "                )  as pc on pc.userIdx = u.userIdx\n" +
                                                                 "\n" +
                                                                 "    left join (select jc.userIdx, count(*) as completionCount\n" +
-                                                                "                from JoinContents as jc\n" +
-                                                                "                left join (select postIdx from Post as p where p.status = 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
-                                                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
+                                                                "                from joinContents as jc\n" +
+                                                                "                left join (select postIdx from post as p where p.status = 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
+                                                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
                                                                 "                where jc.status = 'ACTIVE' and p.postIdx = jc.postIdx and U.status is not null\n" +
                                                                 "                group by jc.userIdx\n" +
                                                                 "                ) as cc on cc.userIdx = u.userIdx\n" +
                                                                 "\n" +
                                                                 "    left join (select p.userIdx, count(*) as announcementCount\n" +
-                                                                "                from Post as p\n" +
-                                                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on p.userIdx = U.userIdx\n" +
+                                                                "                from post as p\n" +
+                                                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on p.userIdx = U.userIdx\n" +
                                                                 "                where U.status = 'ACTIVE'\n" +
                                                                 "                group by p.userIdx\n" +
                                                                 "    ) as ac on ac.userIdx = u.userIdx\n" +
                                                                 "\n" +
                                                                 "    left join (select pc.userIdx, count(*) as commentCount\n" +
-                                                                "                from PostComment as pc\n" +
-                                                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on pc.userIdx = U.userIdx\n" +
+                                                                "                from postComment as pc\n" +
+                                                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on pc.userIdx = U.userIdx\n" +
                                                                 "                where U.status = 'ACTIVE'\n" +
                                                                 "                group by pc.userIdx\n" +
                                                                 "    ) as cc_ on cc_.userIdx = u.userIdx\n" +
@@ -98,17 +98,17 @@ public class MyActivityRepository {
                         myBookmarkInfo = this.jdbcTemplate.query("select if(countBookBookmark is null, 0, countBookBookmark) as countBookBookmark,\n" +
                                                                     "if(countPostBookmark is null, 0, countPostBookmark) as countPostBookmark,\n" +
                                                                     "if(countForumBookmark is null, 0, countForumBookmark) as countForumBookmark\n" +
-                                                                    "from User as u\n" +
+                                                                    "from user as u\n" +
                                                                     "    left join (select userIdx,count(*) as countBookBookmark\n" +
-                                                                    "        from Bookmark\n" +
+                                                                    "        from bookmark\n" +
                                                                     "        where type = 'BOOK' and status = 'ACTIVE'\n" +
                                                                     "        group by userIdx) as cbb on u.userIdx = cbb.userIdx\n" +
                                                                     "     left join (select userIdx,count(*) as countPostBookmark\n" +
-                                                                    "                        from Bookmark\n" +
+                                                                    "                        from bookmark\n" +
                                                                     "                        where type = 'POST' and status = 'ACTIVE'\n" +
                                                                     "                        group by userIdx) as cpb on u.userIdx = cpb.userIdx\n" +
                                                                     "            left join (select userIdx,count(*) as countForumBookmark\n" +
-                                                                    "                        from Bookmark\n" +
+                                                                    "                        from bookmark\n" +
                                                                     "                        where type = 'FORUM' and status = 'ACTIVE'\n" +
                                                                     "                        group by userIdx) as cfb on u.userIdx = cfb.userIdx\n" +
                                                                     "where u.userIdx = ?",

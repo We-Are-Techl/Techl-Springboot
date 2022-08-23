@@ -26,32 +26,32 @@ public class PostActivityRepository {
                                 "        if(completionCount is null,0, completionCount) as completionCount,\n" +
                                 "       if(announcementCount is null,0, announcementCount) as announcementCount,\n" +
                                 "       if(commentCount is null,0, commentCount) as commentCount\n" +
-                                "from User as u\n" +
+                                "from user as u\n" +
                                 "    left join (select jc.userIdx, count(*) as participationCount\n" +
-                                "                from JoinContents as jc\n" +
-                                "                left join (select postIdx from Post as p where p.status != 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
-                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
+                                "                from joinContents as jc\n" +
+                                "                left join (select postIdx from post as p where p.status != 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
+                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
                                 "                where jc.status = 'ACTIVE' and p.postIdx = jc.postIdx and U.status is not null\n" +
                                 "                group by jc.userIdx\n" +
                                 "                )  as pc on pc.userIdx = u.userIdx\n" +
                                 "\n" +
                                 "    left join (select jc.userIdx, count(*) as completionCount\n" +
-                                "                from JoinContents as jc\n" +
-                                "                left join (select postIdx from Post as p where p.status = 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
-                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
+                                "                from joinContents as jc\n" +
+                                "                left join (select postIdx from post as p where p.status = 'FINISHED' ) as p on p.postIdx = jc.postIdx\n" +
+                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on jc.userIdx = U.userIdx\n" +
                                 "                where jc.status = 'ACTIVE' and p.postIdx = jc.postIdx and U.status is not null\n" +
                                 "                group by jc.userIdx\n" +
                                 "                ) as cc on cc.userIdx = u.userIdx\n" +
                                 "\n" +
                                 "    left join (select p.userIdx, count(*) as announcementCount\n" +
-                                "                from Post as p\n" +
-                                "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on p.userIdx = U.userIdx\n" +
+                                "                from post as p\n" +
+                                "                left join (select userIdx, status from user as u where u.status='ACTIVE') as U on p.userIdx = U.userIdx\n" +
                                 "                where U.status = 'ACTIVE'\n" +
                                 "                group by p.userIdx\n" +
                                 "    ) as ac on ac.userIdx = u.userIdx\n" +
                                 "\n" +
                                 "    left join (select pc.userIdx, count(*) as commentCount\n" +
-                                "                from PostComment as pc\n" +
+                                "                from postComment as pc\n" +
                                 "                left join (select userIdx, status from User as u where u.status='ACTIVE') as U on pc.userIdx = U.userIdx\n" +
                                 "                where U.status = 'ACTIVE'\n" +
                                 "                group by pc.userIdx\n" +
@@ -67,11 +67,11 @@ public class PostActivityRepository {
                         rs.getInt("commentCount"),
                         getMyPostParticipation = this.jdbcTemplate.query("select title,concat(DATE_FORMAT(startDate, '%m/%d'), ' ~ ',DATE_FORMAT(endDate, '%m/%d')) as period,\n" +
                                         "concat(joinCount, '/', p.memberCount) as joinCount\n" +
-                                        "from JoinContents as j\n" +
+                                        "from joinContents as j\n" +
                                         "        left join (select postIdx, title, status, memberCount, startDate, endDate\n" +
-                                        "                    from Post) as p on j.postIdx = p.postIdx\n" +
+                                        "                    from post) as p on j.postIdx = p.postIdx\n" +
                                         "        left join (select postIdx,count(*) as joinCount\n" +
-                                        "                    from JoinContents\n" +
+                                        "                    from joinContents\n" +
                                         "                    group by postIdx) as cj on j.postIdx = cj.postIdx\n" +
                                         "where (p.status = 'ONGOING' or p.status = 'RECRUITING') and j.userIdx = ?",
                                         (re, rownum) -> new GetMyPostParticipation(
@@ -82,11 +82,11 @@ public class PostActivityRepository {
 
                         getMyPostCompletion = this.jdbcTemplate.query("select title,concat(DATE_FORMAT(startDate, '%m/%d'), ' ~ ',DATE_FORMAT(endDate, '%m/%d')) as period,\n" +
                                         "concat(joinCount, '/', p.memberCount) as joinCount\n" +
-                                        "from JoinContents as j\n" +
+                                        "from joinContents as j\n" +
                                         "        left join (select postIdx, title, status, memberCount, startDate, endDate\n" +
-                                        "                    from Post) as p on j.postIdx = p.postIdx\n" +
+                                        "                    from post) as p on j.postIdx = p.postIdx\n" +
                                         "        left join (select postIdx,count(*) as joinCount\n" +
-                                        "                    from JoinContents\n" +
+                                        "                    from joinContents\n" +
                                         "                    group by postIdx) as jc on j.postIdx = jc.postIdx\n" +
                                         "where p.status = 'FINISHED' and j.userIdx = ?;",
                                 (ra, rownum) -> new GetMyPostCompletion(
@@ -96,9 +96,9 @@ public class PostActivityRepository {
                                 ), userIdx),
                         getMyPostAnnouncememt = this.jdbcTemplate.query("select title,concat(DATE_FORMAT(startDate, '%m/%d'), ' ~ ',DATE_FORMAT(endDate, '%m/%d')) as period,\n" +
                                         " concat(if(joinCount is null, 0, joinCount), '/', p.memberCount) as joinCount\n" +
-                                        "from Post as p\n" +
+                                        "from post as p\n" +
                                         "        left join (select postIdx,count(*) joinCount\n" +
-                                        "                    from JoinContents as j\n" +
+                                        "                    from joinContents as j\n" +
                                         "                    group by postIdx) as jc on p.postIdx = jc.postIdx\n" +
                                         "where  userIdx = ?;",
                                 (rb, rownum) -> new GetMyPostAnnouncememt(
@@ -108,7 +108,7 @@ public class PostActivityRepository {
                                 ), userIdx),
                         getMyPostComment = this.jdbcTemplate.query("select distinct title, nickName,countUpvote, countComment,createdDate\n" +
                                         "from (  select postIdx, userIdx\n" +
-                                        "        from PostComment) as countPostComment\n" +
+                                        "        from postComment) as countPostComment\n" +
                                         "                left join (select p.postIdx, title, nickName,if(countUpvote is null, 0, countUpvote) as countUpvote,\n" +
                                         "if(countComment is null, 0, countComment) as countComment,\n" +
                                         "                                    case\n" +
@@ -118,21 +118,21 @@ public class PostActivityRepository {
                                         "                                        when timestampdiff(year, createdAt,current_timestamp) > 0 then concat(timestampdiff(year, createdAt,current_timestamp), '년 전')\n" +
                                         "                                        else DATE_FORMAT(createdAt, '%m/%d')\n" +
                                         "                                    end as createdDate\n" +
-                                        "                            from Post as p\n" +
+                                        "                            from post as p\n" +
                                         "                                    left join (select userIdx, nickName\n" +
-                                        "                                                from User) as u on p.userIdx = u.userIdx\n" +
+                                        "                                                from user) as u on p.userIdx = u.userIdx\n" +
                                         "                                    left join (select postIdx,count(userIdx) as countComment\n" +
                                         "                                                from (\n" +
                                         "                                                       select postIdx, userIdx\n" +
-                                        "                                                        from PostComment\n" +
+                                        "                                                        from postComment\n" +
                                         "                                                        where status = 'ACTIVE') as countPostComment\n" +
                                         "                                                group by postIdx) as cfc on p.postIdx = cfc.postIdx\n" +
                                         "                                    left join (select postIdx,count(*) as countUpvote\n" +
-                                        "                                                from PostUpvote\n" +
+                                        "                                                from postUpvote\n" +
                                         "                                                where PostUpvote.status = 'ACTIVE'\n" +
                                         "                                                group by postIdx) as fu on p.postIdx = fu.postIdx\n" +
                                         "                                    left join (select bookIdx, title as bookTitle\n" +
-                                        "                                                from Book) as bk on p.bookIdx = bk.bookIdx\n" +
+                                        "                                                from book) as bk on p.bookIdx = bk.bookIdx\n" +
                                         "                            group by p.postIdx) as postList on countPostComment.postIdx = postList.postIdx\n" +
                                         "where countPostComment.userIdx = ?\n" +
                                         "order by createdDate desc",
