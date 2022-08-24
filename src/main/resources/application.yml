@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: techl
+
+  datasource:
+    platform: mysql
+    url: jdbc:mysql://gitak-db.cxo9w9y7rd5k.ap-northeast-2.rds.amazonaws.com:3306/techl?useUnicode=true&serverTimezone=Asia/Seoul
+    username: gitak
+    password: lkt1030325!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+cloud:
+  aws:
+    s3:
+      bucket: techlbucket
+    credentials:
+      accessKey: AKIAV4TFOZXBDQCAIDR6
+      secretKey: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
